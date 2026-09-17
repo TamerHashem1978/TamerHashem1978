@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سبق | Sabaq - منصة منتجات ومهارات وكلاء الذكاء الاصطناعي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-primary: #F9AD10;
+      --gold-heart: #F4A401;
+      --gold-light: #F8DB5F;
+      --gold-highlight: #FFF378;
+      --gold-warm: #F7C443;
+      --gold-button: #E09314;
+      --gold-bronze: #D8870E;
+      --gold-deep: #B4680D;
+      --gold-shadow: #8A4B06;
+      --green-bright: #30A933;
+      --green-primary: #0D6421;
+      --green-card: #05311C;
+      --green-section: #052316;
+      --bg-color: #070B07;
+      --text-primary: #D5E5D2;
+      --text-secondary: #8DA18F;
+      --text-muted: #6F8272;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .quran-watermark {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      font-family: 'Amiri Quran', serif;
+      font-size: 8rem;
+      color: rgba(249, 173, 16, 0.025);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: var(--green-section);
+      border: 1px solid rgba(249, 173, 16, 0.3);
+      border-radius: 16px;
+      margin-bottom: 40px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-shadow), var(--gold-primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Aref Ruqaa', serif;
+      font-weight: bold;
+      color: var(--bg-color);
+      font-size: 24px;
+    }
+
+    .brand-title {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 26px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold-bronze) 0%, var(--gold-heart) 18%, var(--gold-primary) 30%, var(--gold-warm) 42%, var(--gold-highlight) 52%, var(--gold-warm) 62%, var(--gold-primary) 76%, var(--gold-bronze) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(180deg, var(--green-card) 0%, var(--green-section) 100%);
+      border: 1.5px solid rgba(249, 173, 16, 0.4);
+      border-radius: 24px;
+      margin-bottom: 48px;
+    }
+
+    .hero h1 {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 38px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--gold-bronze) 0%, var(--gold-primary) 50%, var(--gold-highlight) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .btn-gold {
+      display: inline-block;
+      padding: 14px 32px;
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--bg-color);
+      background: linear-gradient(135deg, var(--gold-shadow) 0%, var(--gold-deep) 14%, var(--gold-button) 30%, var(--gold-primary) 44%, var(--gold-highlight) 54%, var(--gold-warm) 64%, var(--gold-button) 78%, var(--gold-shadow) 100%);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(249, 173, 16, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(249, 173, 16, 0.5);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .feature-card {
+      background: var(--green-card);
+      border: 1px solid rgba(48, 169, 51, 0.3);
+      border-radius: 18px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--gold-primary);
+      transform: translateY(-3px);
+    }
+
+    .feature-card h3 {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 22px;
+      color: var(--gold-primary);
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid rgba(249, 173, 16, 0.2);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quran-watermark">سبق</div>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">س</div>
+        <div class="brand-title">سبق | Sabaq</div>
+      </div>
+      <div>
+        <a href="#features" class="btn-gold" style="padding: 8px 20px; font-size: 15px;">gosabaq.com</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>منصة سبق لمنتجات ومهارات وكلاء الذكاء الاصطناعي</h1>
+        <p>المنصة المتكاملة لبناء، اختبار، مشاركة، وبيع مهارات وكلاء الذكاء الاصطناعي في السوق مع بوابة دفع آمنة واشتراكات شهرية للمطورين.</p>
+        <a href="#marketplace" class="btn-gold">استكشف سوق الوكلاء</a>
+      </section>
+
+      <section id="features" class="features-grid">
+        <div class="feature-card">
+          <h3>سوق الوكلاء والمنتجات</h3>
+          <p>تصفح واشترِ مهارات وحزم برمجية جاهزة للاستخدام من كبار المطورين بأسعار تنافسية بالريال السعودي.</p>
+        </div>
+        <div class="feature-card">
+          <h3>استوديو بناء المهارات</h3>
+          <p>حدد التعليمات التوجيهية وسلوك الوكيل والأدوات المفعلة (Web, SQL, Python, REST) بنقرات بسيطة.</p>
+        </div>
+        <div class="feature-card">
+          <h3>المختبر الفوري (Sandbox)</h3>
+          <p>قم بمحاكاة سيناريوهات التشغيل الحقيقية، وافحص مسار الاستدلال (Reasoning) ومؤشرات الأداء بدقة.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2025 سبق | Sabaq — جميع الحقوق محفوظة لـ gosabaq.com</p>
+    </footer>
+  </div>
+</body>
+</html>

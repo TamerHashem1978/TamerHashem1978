@@ -1,0 +1,6 @@
+{
+  "name": "سبق | Sabaq",
+  "description": "منصة سبق لمنتجات الذكاء الاصطناعي، بناء واختبار مهارات الوكلاء، الاشتراكات ولوحة التحكم - gosabaq.com",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

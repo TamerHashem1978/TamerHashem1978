@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Glowing outer aura -->
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#1A00E5FF"
+        android:fillColor="#00000000"
+        android:pathData="M54,23 L83,43 L72,83 L36,83 L25,43 Z" />
+
+    <!-- Outer Falcon / Speed Wings -->
+    <path
+        android:pathData="M54,27 L80,45 L69,67 L54,58 L39,67 L28,45 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="28"
+                android:startY="27"
+                android:endX="80"
+                android:endY="67"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#00E5FF" />
+                <item android:offset="0.5" android:color="#6366F1" />
+                <item android:offset="1.0" android:color="#38BDF8" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Inner Falcon Core & Lightning Arrow -->
+    <path
+        android:pathData="M54,32 L67,49 L58,51 L62,64 L46,55 L52,53 L41,49 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="41"
+                android:startY="32"
+                android:endX="67"
+                android:endY="64"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFFFFF" />
+                <item android:offset="1.0" android:color="#A5F3FC" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Lower Dynamic Wings / Speed Feathers -->
+    <path
+        android:pathData="M54,61 L68,75 L62,79 L54,71 L46,79 L40,75 Z"
+        android:fillColor="#00E5FF" />
+
+    <!-- Neural Data Spark nodes -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M54,41a2.5,2.5 0 1,0 0.01,0 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,42a1,1 0 1,0 0.01,0 Z" />
+</vector>
+
