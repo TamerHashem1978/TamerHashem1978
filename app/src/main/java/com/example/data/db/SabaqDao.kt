@@ -31,6 +31,12 @@ interface SabaqDao {
   @Query("UPDATE agent_products SET isPurchased = 1 WHERE id = :productId")
   suspend fun markProductPurchased(productId: String)
 
+  @Query("UPDATE agent_products SET version = :newVersion WHERE id = :productId")
+  suspend fun updateProductVersion(productId: String, newVersion: String)
+
+  @Query("UPDATE user_subscription SET renewalDate = :newDate WHERE id = 1")
+  suspend fun updateSubscriptionRenewalDate(newDate: Long)
+
   // Agent Skills (Builder & Tested skills)
   @Query("SELECT * FROM agent_skills ORDER BY createdAt DESC")
   fun getAllSkills(): Flow<List<AgentSkill>>

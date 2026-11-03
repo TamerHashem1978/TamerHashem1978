@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.data.model.AgentProduct
 import com.example.data.model.AgentSkill
+import com.example.data.model.SabaqAlertType
+import com.example.data.model.SabaqToastAlert
 import com.example.data.model.TestRunResult
 import com.example.data.model.TransactionRecord
 import com.example.data.model.UserSubscriptionState
@@ -125,9 +127,15 @@ class SabaqViewModel(private val repository: SabaqRepository) : ViewModel() {
   private val _toastEvent = MutableSharedFlow<String>()
   val toastEvent: SharedFlow<String> = _toastEvent.asSharedFlow()
 
+  // In-App Toast Alert System State
+  private val _activeToastAlert = MutableStateFlow<SabaqToastAlert?>(null)
+  val activeToastAlert: StateFlow<SabaqToastAlert?> = _activeToastAlert.asStateFlow()
+
   init {
     viewModelScope.launch {
       repository.initializeDefaultDataIfEmpty()
+      kotlinx.coroutines.delay(1200)
+      checkForScheduledAlerts()
     }
   }
 
@@ -324,6 +332,102 @@ class SabaqViewModel(private val repository: SabaqRepository) : ViewModel() {
   private fun emitToast(msg: String) {
     viewModelScope.launch {
       _toastEvent.emit(msg)
+    }
+  }
+
+  fun showToastAlert(alert: SabaqToastAlert) {
+    _activeToastAlert.value = alert
+  }
+
+  fun dismissToastAlert() {
+    _activeToastAlert.value = null
+  }
+
+  fun checkForScheduledAlerts() {
+    viewModelScope.launch {
+      val sub = subscriptionState.value
+      val products = allProducts.value
+      val purchasedLawyer = products.firstOrNull { it.id == "prod-agent-lawyer" }
+
+      // 1. Check for updates on purchased skills (e.g. v2.4 -> v2.5 available)
+      if (purchasedLawyer != null && purchasedLawyer.version == "v2.4") {
+        showToastAlert(
+          SabaqToastAlert(
+            type = SabaqAlertType.SKILL_VERSION_UPDATE,
+            title = "🚀 إصدار جديد متاح لمهارة معتمدة!",
+            message = "تم إطلاق التحديث v2.5 لـ [وكيل المحامي الذكي] (تحديث توافق نظام المعاملات المدنية ولائحة التجارة). حدّث الآن مجاناً.",
+            actionLabel = "تحديث إلى v2.5 الآن",
+            targetId = "prod-agent-lawyer",
+            newVersion = "v2.5"
+          )
+        )
+      } else if (sub != null && sub.isActive) {
+        // 2. Check if subscription is near expiration (within 5 days)
+        val daysRemaining = ((sub.renewalDate - System.currentTimeMillis()) / 86400000L).coerceAtLeast(0).toInt()
+        if (daysRemaining <= 5) {
+          val tierName = if (sub.currentTierId == "ENTERPRISE") "المؤسسات AI" else "المحترف Pro"
+          showToastAlert(
+            SabaqToastAlert(
+              type = SabaqAlertType.SUBSCRIPTION_EXPIRING,
+              title = "⏳ تنبيه: اقتراب موعد تجديد الاشتراك",
+              message = "اشتراكك في باقة $tierName يوشك على الانتهاء خلال $daysRemaining أيام! جدد اشتراكك الآن لضمان استمرار تشغيل الوكلاء.",
+              actionLabel = "تجديد الاشتراك الآن",
+              targetId = sub.currentTierId,
+              daysRemaining = daysRemaining
+            )
+          )
+        }
+      }
+    }
+  }
+
+  fun triggerSubscriptionExpiringAlert() {
+    val sub = subscriptionState.value
+    val tier = if (sub?.currentTierId != null && sub.currentTierId != "FREE") sub.currentTierId else "PRO"
+    val tierName = if (tier == "ENTERPRISE") "المؤسسات AI" else "المحترف Pro"
+    showToastAlert(
+      SabaqToastAlert(
+        type = SabaqAlertType.SUBSCRIPTION_EXPIRING,
+        title = "⏳ تنبيه: اقتراب انتهاء اشتراك الوكلاء",
+        message = "اشتراكك في باقة $tierName ينتهي خلال 3 أيام! قم بتجديد الاشتراك لضمان استمرار تشغيل الوكلاء دون انقطاع.",
+        actionLabel = "تجديد الاشتراك الآن",
+        targetId = tier,
+        daysRemaining = 3
+      )
+    )
+  }
+
+  fun triggerSkillUpdateAlert() {
+    showToastAlert(
+      SabaqToastAlert(
+        type = SabaqAlertType.SKILL_VERSION_UPDATE,
+        title = "🚀 تحديث جديد متوفر لمهارة معتمدة",
+        message = "تم إصدار التحديث v2.5 لـ [وكيل المحامي الذكي] مع تحسينات تدقيق العقود ونظام المعاملات المدنية.",
+        actionLabel = "تحديث فوري إلى v2.5",
+        targetId = "prod-agent-lawyer",
+        newVersion = "v2.5"
+      )
+    )
+  }
+
+  fun handleToastAlertAction(alert: SabaqToastAlert) {
+    dismissToastAlert()
+    when (alert.type) {
+      SabaqAlertType.SUBSCRIPTION_EXPIRING -> {
+        val tier = alert.targetId ?: "PRO"
+        val cost = if (tier == "ENTERPRISE") 149.0 else 49.0
+        val name = if (tier == "ENTERPRISE") "باقة المؤسسات Enterprise" else "باقة المحترف Pro"
+        openCheckoutForSubscription(tier, cost, name)
+      }
+      SabaqAlertType.SKILL_VERSION_UPDATE -> {
+        val productId = alert.targetId ?: "prod-agent-lawyer"
+        val newVer = alert.newVersion ?: "v2.5"
+        viewModelScope.launch {
+          repository.updateProductVersion(productId, newVer)
+          emitToast("✅ تم تحديث مهارة الوكيل بنجاح إلى الإصدار $newVer!")
+        }
+      }
+      else -> {}
     }
   }
 }

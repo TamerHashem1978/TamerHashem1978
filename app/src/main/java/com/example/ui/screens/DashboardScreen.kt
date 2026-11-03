@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Paid
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material.icons.filled.Star
@@ -67,6 +68,8 @@ fun DashboardScreen(
   transactions: List<TransactionRecord>,
   onSelectSubscription: (tierId: String, costSar: Double, tierNameAr: String) -> Unit,
   onRequestPayout: () -> Unit,
+  onTriggerSubscriptionAlert: () -> Unit = {},
+  onTriggerSkillUpdateAlert: () -> Unit = {},
   modifier: Modifier = Modifier
 ) {
   val currentTier = subscriptionState?.currentTierId ?: "FREE"
@@ -83,6 +86,127 @@ fun DashboardScreen(
         subscriptionState = subscriptionState,
         onRequestPayout = onRequestPayout
       )
+    }
+
+    // Smart Notifications Card
+    item {
+      Card(
+        modifier = Modifier
+          .fillMaxWidth()
+          .testTag("notification_center_card"),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+          containerColor = SabaqGreenCard
+        ),
+        border = androidx.compose.foundation.BorderStroke(1.dp, SabaqGoldPrimary.copy(alpha = 0.35f))
+      ) {
+        Column(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+        ) {
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Icon(
+                imageVector = Icons.Default.NotificationsActive,
+                contentDescription = null,
+                tint = SabaqGoldPrimary,
+                modifier = Modifier.size(20.dp)
+              )
+              Spacer(modifier = Modifier.width(8.dp))
+              Text(
+                text = "نظام التنبيهات وإشعارات الوكلاء:",
+                fontFamily = ArefRuqaaFontFamily,
+                style = MaterialTheme.typography.titleSmall.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SabaqGoldHighlight,
+                  fontSize = 16.sp
+                )
+              )
+            }
+
+            Box(
+              modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(SabaqGreenBright.copy(alpha = 0.15f))
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+              Text(
+                text = "نشط ومفعّل",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  color = SabaqGreenBright,
+                  fontWeight = FontWeight.Bold
+                )
+              )
+            }
+          }
+
+          Spacer(modifier = Modifier.height(6.dp))
+
+          Text(
+            text = "تنبيهات فورية عند اقتراب انتهاء اشتراكات الوكلاء، أو عند إصدار نسخ وتحديثات جديدة للمهارات المشتراة مع إمكانية التحديث أو التجديد الفوري.",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SabaqTextSecondary,
+              lineHeight = 18.sp
+            )
+          )
+
+          Spacer(modifier = Modifier.height(12.dp))
+
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+          ) {
+            Box(
+              modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(10.dp))
+                .background(SabaqAmber.copy(alpha = 0.15f))
+                .border(1.dp, SabaqAmber.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                .clickable { onTriggerSubscriptionAlert() }
+                .padding(vertical = 10.dp, horizontal = 8.dp)
+                .testTag("test_sub_alert_btn"),
+              contentAlignment = Alignment.Center
+            ) {
+              Text(
+                text = "⏳ فحص انتهاء الاشتراك",
+                fontFamily = ArefRuqaaFontFamily,
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SabaqAmber,
+                  fontSize = 12.sp
+                )
+              )
+            }
+
+            Box(
+              modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(10.dp))
+                .background(SabaqCyan.copy(alpha = 0.15f))
+                .border(1.dp, SabaqCyan.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                .clickable { onTriggerSkillUpdateAlert() }
+                .padding(vertical = 10.dp, horizontal = 8.dp)
+                .testTag("test_skill_update_btn"),
+              contentAlignment = Alignment.Center
+            ) {
+              Text(
+                text = "🚀 فحص تحديث المهارات",
+                fontFamily = ArefRuqaaFontFamily,
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SabaqCyan,
+                  fontSize = 12.sp
+                )
+              )
+            }
+          }
+        }
+      }
     }
 
     // Analytics Metrics Grid

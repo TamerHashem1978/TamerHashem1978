@@ -265,6 +265,15 @@ class SabaqRepository(private val dao: SabaqDao) {
     Result.success(transaction)
   }
 
+  suspend fun updateProductVersion(productId: String, newVersion: String) = withContext(Dispatchers.IO) {
+    dao.updateProductVersion(productId, newVersion)
+  }
+
+  suspend fun simulateSubscriptionExpiringSoon() = withContext(Dispatchers.IO) {
+    val twoDaysFromNow = System.currentTimeMillis() + (2L * 86400000L)
+    dao.updateSubscriptionRenewalDate(twoDaysFromNow)
+  }
+
   private fun getInitialProducts(): List<AgentProduct> {
     return listOf(
       AgentProduct(

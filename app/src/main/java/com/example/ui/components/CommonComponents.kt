@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shield
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.ArefRuqaaFontFamily
+import com.example.ui.theme.SabaqAmber
 import com.example.ui.theme.SabaqGoldBronze
 import com.example.ui.theme.SabaqGoldHighlight
 import com.example.ui.theme.SabaqGoldPrimary
@@ -66,6 +68,8 @@ import com.example.ui.viewmodel.SabaqNavTab
 @Composable
 fun SabaqTopHeader(
   currentTier: String,
+  hasActiveAlert: Boolean = false,
+  onNotificationClick: () -> Unit = {},
   onNavigateToDashboard: () -> Unit,
   modifier: Modifier = Modifier
 ) {
@@ -140,8 +144,42 @@ fun SabaqTopHeader(
           }
         }
 
-        // Subscription Tier & Security Chip
+        // Subscription Tier & Notification Bell
         Row(verticalAlignment = Alignment.CenterVertically) {
+          // Notification Bell
+          Box(
+            modifier = Modifier
+              .size(36.dp)
+              .clip(CircleShape)
+              .background(SabaqGreenCard)
+              .border(
+                1.dp,
+                if (hasActiveAlert) SabaqAmber else SabaqGoldPrimary.copy(alpha = 0.35f),
+                CircleShape
+              )
+              .clickable { onNotificationClick() }
+              .testTag("top_notifications_btn"),
+            contentAlignment = Alignment.Center
+          ) {
+            Icon(
+              imageVector = Icons.Default.Notifications,
+              contentDescription = "التنبيهات والإشعارات",
+              tint = if (hasActiveAlert) SabaqAmber else SabaqGoldPrimary,
+              modifier = Modifier.size(18.dp)
+            )
+            if (hasActiveAlert) {
+              Box(
+                modifier = Modifier
+                  .size(8.dp)
+                  .align(Alignment.TopEnd)
+                  .clip(CircleShape)
+                  .background(SabaqAmber)
+              )
+            }
+          }
+
+          Spacer(modifier = Modifier.width(8.dp))
+
           Surface(
             modifier = Modifier
               .clip(RoundedCornerShape(20.dp))

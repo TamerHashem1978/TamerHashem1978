@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,7 @@ import com.example.data.model.AgentSkill
 import com.example.data.repository.SabaqRepository
 import com.example.ui.components.AmiriQuranBackgroundWatermark
 import com.example.ui.components.SabaqBottomNavBar
+import com.example.ui.components.SabaqToastNotificationHost
 import com.example.ui.components.SabaqTopHeader
 import com.example.ui.dialogs.CheckoutDialog
 import com.example.ui.dialogs.ProductDetailDialog
@@ -96,6 +98,7 @@ fun SabaqApp(viewModel: SabaqViewModel) {
   val testingInputPrompt by viewModel.testingInputPrompt.collectAsStateWithLifecycle()
   val isTestingRunning by viewModel.isTestingRunning.collectAsStateWithLifecycle()
   val lastTestResult by viewModel.lastTestResult.collectAsStateWithLifecycle()
+  val activeToastAlert by viewModel.activeToastAlert.collectAsStateWithLifecycle()
 
   // Toast listener
   LaunchedEffect(Unit) {
@@ -110,6 +113,14 @@ fun SabaqApp(viewModel: SabaqViewModel) {
     topBar = {
       SabaqTopHeader(
         currentTier = subscriptionState?.currentTierId ?: "FREE",
+        hasActiveAlert = activeToastAlert != null,
+        onNotificationClick = {
+          if (activeToastAlert != null) {
+            viewModel.dismissToastAlert()
+          } else {
+            viewModel.triggerSubscriptionExpiringAlert()
+          }
+        },
         onNavigateToDashboard = { viewModel.setTab(SabaqNavTab.DASHBOARD) }
       )
     },
@@ -212,7 +223,9 @@ fun SabaqApp(viewModel: SabaqViewModel) {
               },
               onRequestPayout = {
                 Toast.makeText(context, "تم إرسال طلب سحب الأرباح إلى حساب STC Pay المسجل بنجاح!", Toast.LENGTH_LONG).show()
-              }
+              },
+              onTriggerSubscriptionAlert = { viewModel.triggerSubscriptionExpiringAlert() },
+              onTriggerSkillUpdateAlert = { viewModel.triggerSkillUpdateAlert() }
             )
           }
         }
@@ -272,6 +285,14 @@ fun SabaqApp(viewModel: SabaqViewModel) {
           onPublishToMarketplace = { viewModel.publishSkillToMarketplace(it) }
         )
       }
+
+      // Floating In-App Toast Notification Banner
+      SabaqToastNotificationHost(
+        alert = activeToastAlert,
+        onDismiss = { viewModel.dismissToastAlert() },
+        onActionClick = { viewModel.handleToastAlertAction(it) },
+        modifier = Modifier.align(Alignment.TopCenter)
+      )
     }
   }
 }
