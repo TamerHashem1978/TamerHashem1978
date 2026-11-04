@@ -23,11 +23,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.Image
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -416,3 +421,115 @@ fun SabaqGoldButtonView(
     }
   }
 }
+
+/**
+ * الشعار الرسمي المعتمد لمنصة سبق (Sabaq AI)
+ * الصقر الذهبي الإلكتروني المجسم ثلاثي الأبعاد مع هالة إشعاع معدنية
+ */
+@Composable
+fun SabaqOfficialLogoView(
+  modifier: Modifier = Modifier,
+  size: Dp = 48.dp,
+  showGlow: Boolean = true,
+  is3dFloating: Boolean = true
+) {
+  val infiniteTransition = rememberInfiniteTransition(label = "OfficialLogo3D")
+  val floatOffset by infiniteTransition.animateFloat(
+    initialValue = if (is3dFloating) -3f else 0f,
+    targetValue = if (is3dFloating) 3f else 0f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(2400, easing = FastOutSlowInEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "LogoFloat"
+  )
+  val shineAlpha by infiniteTransition.animateFloat(
+    initialValue = 0.4f,
+    targetValue = 0.95f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(1800, easing = FastOutSlowInEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "LogoShine"
+  )
+
+  Box(
+    modifier = modifier
+      .size(size)
+      .offset(y = floatOffset.dp),
+    contentAlignment = Alignment.Center
+  ) {
+    // 1. هالة النور والعمق ثلاثي الأبعاد
+    if (showGlow) {
+      Box(
+        modifier = Modifier
+          .size(size * 1.15f)
+          .clip(CircleShape)
+          .background(
+            Brush.radialGradient(
+              listOf(
+                SabaqGoldPrimary.copy(alpha = 0.28f * shineAlpha),
+                SabaqGoldWarm.copy(alpha = 0.12f * shineAlpha),
+                Color.Transparent
+              )
+            )
+          )
+      )
+    }
+
+    // 2. إطار ذهبي ميتاليك مجسم 3D
+    Surface(
+      modifier = Modifier
+        .size(size)
+        .clip(CircleShape)
+        .border(
+          width = 1.5.dp,
+          brush = Brush.sweepGradient(
+            listOf(
+              SabaqGoldHighlight,
+              SabaqGoldPrimary,
+              SabaqGoldBronze,
+              SabaqGoldHighlight
+            )
+          ),
+          shape = CircleShape
+        ),
+      color = Color(0xFF010100), // الخلفية السوداء المعتمدة للشعار
+      shadowElevation = 6.dp
+    ) {
+      Image(
+        painter = painterResource(id = com.example.R.drawable.sabaq_official_logo),
+        contentDescription = "شعار سبق الرسمي المعتمد",
+        modifier = Modifier
+          .fillMaxSize()
+          .clip(CircleShape)
+          .padding(2.dp),
+        contentScale = ContentScale.Fit
+      )
+    }
+  }
+}
+
+/**
+ * حاوية ثلاثية الأبعاد (3D Perspective Card) تعطي عمقاً وتأثيراً مجسماً
+ */
+@Composable
+fun Sabaq3DPerspectiveContainer(
+  modifier: Modifier = Modifier,
+  tiltAngleX: Float = 2.5f,
+  tiltAngleY: Float = -2.0f,
+  content: @Composable () -> Unit
+) {
+  Box(
+    modifier = modifier
+      .graphicsLayer {
+        rotationX = tiltAngleX
+        rotationY = tiltAngleY
+        cameraDistance = 16f * density
+        shadowElevation = 8f
+      }
+  ) {
+    content()
+  }
+}
+

@@ -57,6 +57,7 @@ import java.util.Locale
 @Composable
 fun ProductDetailDialog(
   product: AgentProduct?,
+  country: com.example.data.model.ArabCountry = com.example.data.model.ArabCountriesData.EGYPT,
   onDismiss: () -> Unit,
   onBuyClicked: (AgentProduct) -> Unit,
   onTestClicked: (AgentProduct) -> Unit,
@@ -86,37 +87,32 @@ fun ProductDetailDialog(
           .padding(20.dp)
           .verticalScroll(rememberScrollState())
       ) {
-        // Top Bar
+        // Top Bar with Official Sabaq Logo
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
           Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-              modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(SabaqGoldPrimary.copy(alpha = 0.15f)),
-              contentAlignment = Alignment.Center
-            ) {
-              Icon(
-                imageVector = Icons.Default.AutoAwesome,
-                contentDescription = null,
-                tint = SabaqGoldPrimary,
-                modifier = Modifier.size(20.dp)
-              )
-            }
+            com.example.ui.components.SabaqOfficialLogoView(
+              size = 36.dp,
+              showGlow = false,
+              is3dFloating = false
+            )
             Spacer(modifier = Modifier.width(10.dp))
             Column {
-              Text(
-                text = product.categoryLabelAr,
-                fontFamily = ArefRuqaaFontFamily,
-                style = MaterialTheme.typography.labelSmall.copy(
-                  color = SabaqGoldPrimary,
-                  fontWeight = FontWeight.Bold
+              Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                  text = product.categoryLabelAr,
+                  fontFamily = ArefRuqaaFontFamily,
+                  style = MaterialTheme.typography.labelSmall.copy(
+                    color = SabaqGoldPrimary,
+                    fontWeight = FontWeight.Bold
+                  )
                 )
-              )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(text = country.flagEmoji, fontSize = 12.sp)
+              }
               Text(
                 text = product.version,
                 style = MaterialTheme.typography.labelSmall.copy(
@@ -288,11 +284,11 @@ fun ProductDetailDialog(
               )
             )
             Text(
-              text = "${String.format(Locale.US, "%.0f", product.priceSar)} ر.س",
+              text = com.example.data.model.ArabCountriesData.formatPrice(product.priceSar, country),
               fontFamily = ArefRuqaaFontFamily,
               style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 color = SabaqGoldPrimary
               )
             )

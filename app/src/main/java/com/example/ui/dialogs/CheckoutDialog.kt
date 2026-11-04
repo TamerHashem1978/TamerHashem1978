@@ -61,6 +61,7 @@ import java.util.Locale
 @Composable
 fun CheckoutDialog(
   state: CheckoutUiState,
+  country: com.example.data.model.ArabCountry = com.example.data.model.ArabCountriesData.EGYPT,
   onDismiss: () -> Unit,
   onSelectPaymentMethod: (String) -> Unit,
   onUpdateCardField: (number: String?, holder: String?, expiry: String?, cvv: String?) -> Unit,
@@ -91,42 +92,42 @@ fun CheckoutDialog(
           .padding(20.dp)
           .verticalScroll(rememberScrollState())
       ) {
-        // Dialog Header
+        // Dialog Header with Official Logo
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
           Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-              modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(SabaqGoldPrimary.copy(alpha = 0.15f)),
-              contentAlignment = Alignment.Center
-            ) {
-              Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = "Secure Checkout",
-                tint = SabaqGoldPrimary,
-                modifier = Modifier.size(20.dp)
-              )
-            }
+            // الشعار الرسمي لصقر سبق الذهبي
+            com.example.ui.components.SabaqOfficialLogoView(
+              size = 40.dp,
+              showGlow = true,
+              is3dFloating = false
+            )
             Spacer(modifier = Modifier.width(10.dp))
             Column {
-              Text(
-                text = "بوابة الدفع الآمنة - سبق",
-                fontFamily = ArefRuqaaFontFamily,
-                style = MaterialTheme.typography.titleMedium.copy(
-                  fontWeight = FontWeight.Bold,
-                  fontSize = 18.sp,
-                  color = SabaqGoldPrimary
+              Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                  text = "بوابة الدفع الآمنة - سبق",
+                  fontFamily = ArefRuqaaFontFamily,
+                  style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 17.sp,
+                    color = SabaqGoldPrimary
+                  )
                 )
-              )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                  text = country.flagEmoji,
+                  fontSize = 15.sp
+                )
+              }
               Text(
-                text = "gosabaq.com/checkout • مشفر 256-bit",
+                text = "دفع آمن بالعملة المحلية (${country.currencySymbolAr} - ${country.currencyNameAr})",
                 style = MaterialTheme.typography.labelSmall.copy(
-                  color = SabaqGreenBright
+                  color = SabaqGreenBright,
+                  fontSize = 10.sp
                 )
               )
             }
@@ -153,13 +154,106 @@ fun CheckoutDialog(
             onClose = onDismiss
           )
         } else {
-          // Checkout Flow
-          OrderSummaryCard(state = state)
+          // 3D Virtual Card Preview with Official Falcon Logo
+          com.example.ui.components.Sabaq3DPerspectiveContainer(tiltAngleX = 3.5f, tiltAngleY = -4f) {
+            Card(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+              shape = RoundedCornerShape(18.dp),
+              colors = CardDefaults.cardColors(
+                containerColor = SabaqGreenCard
+              ),
+              border = androidx.compose.foundation.BorderStroke(
+                1.5.dp,
+                Brush.linearGradient(
+                  listOf(
+                    SabaqGoldHighlight,
+                    SabaqGoldPrimary,
+                    SabaqGreenBright
+                  )
+                )
+              )
+            ) {
+              Column(
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(16.dp)
+              ) {
+                Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  horizontalArrangement = Arrangement.SpaceBetween,
+                  verticalAlignment = Alignment.CenterVertically
+                ) {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
+                    com.example.ui.components.SabaqOfficialLogoView(
+                      size = 32.dp,
+                      showGlow = false,
+                      is3dFloating = false
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                      text = "سَبَق AI",
+                      fontFamily = ArefRuqaaFontFamily,
+                      fontWeight = FontWeight.Bold,
+                      color = SabaqGoldPrimary,
+                      fontSize = 16.sp
+                    )
+                  }
+                  Text(
+                    text = "${country.flagEmoji} ${country.currencyCode}",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                      fontWeight = FontWeight.Bold,
+                      color = SabaqGoldHighlight,
+                      fontSize = 12.sp
+                    )
+                  )
+                }
 
-          Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Text(
+                  text = state.cardNumber,
+                  style = MaterialTheme.typography.titleMedium.copy(
+                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                    letterSpacing = 2.sp,
+                    color = SabaqTextPrimary
+                  )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                  Text(
+                    text = state.cardHolder,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                      color = SabaqTextSecondary,
+                      fontWeight = FontWeight.SemiBold
+                    )
+                  )
+                  Text(
+                    text = state.cardExpiry,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                      color = SabaqTextSecondary
+                    )
+                  )
+                }
+              }
+            }
+          }
+
+          Spacer(modifier = Modifier.height(12.dp))
+
+          // Checkout Flow
+          OrderSummaryCard(state = state, country = country)
+
+          Spacer(modifier = Modifier.height(16.dp))
 
           Text(
-            text = "اختر وسيلة الدفع المعتمدة:",
+            text = "وسائل الدفع المعتمدة في ${country.nameAr}:",
             style = MaterialTheme.typography.bodyMedium.copy(
               fontWeight = FontWeight.Bold,
               color = MaterialTheme.colorScheme.onSurface
@@ -170,26 +264,118 @@ fun CheckoutDialog(
 
           PaymentMethodsSelector(
             selectedMethod = state.paymentMethod,
+            country = country,
             onSelect = onSelectPaymentMethod
           )
 
           Spacer(modifier = Modifier.height(16.dp))
 
-          // Card details when MADA, VISA or Apple Pay selected
-          if (state.paymentMethod == "MADA" || state.paymentMethod == "VISA") {
-            CardDetailsInputs(
-              state = state,
-              onUpdate = onUpdateCardField
-            )
-          } else if (state.paymentMethod == "STC_PAY") {
-            StcPayInput()
-          } else {
-            ApplePayFastCheckout(amountSar = state.amountSar)
+          // Specific Country Method inputs
+          when (state.paymentMethod) {
+            "INSTAPAY" -> {
+              Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = SabaqGreenCard,
+                shape = RoundedCornerShape(12.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, SabaqGreenBright.copy(alpha = 0.4f))
+              ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "⚡", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                      text = "الدفع الفوري عبر إنستاباي (InstaPay)",
+                      fontWeight = FontWeight.Bold,
+                      color = SabaqGreenBright,
+                      fontSize = 13.sp
+                    )
+                  }
+                  Spacer(modifier = Modifier.height(6.dp))
+                  Text(
+                    text = "سيتم تزويدك بعنوان الدفع اللحظي IPA: sabaq@instapay لتحويل المبلغ (${com.example.data.model.ArabCountriesData.formatPrice(state.amountSar, country)}) فورياً بدون أي عمولة.",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                      color = SabaqTextSecondary,
+                      fontSize = 11.sp
+                    )
+                  )
+                }
+              }
+            }
+            "FAWRY" -> {
+              Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = SabaqGreenCard,
+                shape = RoundedCornerShape(12.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, SabaqGoldPrimary.copy(alpha = 0.4f))
+              ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "🏪", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                      text = "الدفع عبر فوري (Fawry Pay)",
+                      fontWeight = FontWeight.Bold,
+                      color = SabaqGoldPrimary,
+                      fontSize = 13.sp
+                    )
+                  }
+                  Spacer(modifier = Modifier.height(6.dp))
+                  Text(
+                    text = "رقم الدفع المرجعي لفوري: 789 421 90 (صالح لمدة 24 ساعة في أي فرع أو تطبيق فوري).",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                      color = SabaqTextSecondary,
+                      fontSize = 11.sp
+                    )
+                  )
+                }
+              }
+            }
+            "VODAFONE_CASH" -> {
+              Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = SabaqGreenCard,
+                shape = RoundedCornerShape(12.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, SabaqAmber.copy(alpha = 0.4f))
+              ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                  Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "📱", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                      text = "محافظ المحمول الذكية (فودافون/إتصالات/وي كاش)",
+                      fontWeight = FontWeight.Bold,
+                      color = SabaqAmber,
+                      fontSize = 13.sp
+                    )
+                  }
+                  Spacer(modifier = Modifier.height(6.dp))
+                  Text(
+                    text = "أدخل رقم المحفظة لتأكيد سحب المبلغ (${com.example.data.model.ArabCountriesData.formatPrice(state.amountSar, country)}) عبر إشعار USSD الفوري.",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                      color = SabaqTextSecondary,
+                      fontSize = 11.sp
+                    )
+                  )
+                }
+              }
+            }
+            "STC_PAY" -> {
+              StcPayInput()
+            }
+            "APPLE_PAY" -> {
+              ApplePayFastCheckout(amountSar = state.amountSar)
+            }
+            else -> {
+              CardDetailsInputs(
+                state = state,
+                onUpdate = onUpdateCardField
+              )
+            }
           }
 
           Spacer(modifier = Modifier.height(18.dp))
 
-          // Security & SAMA compliance badges
+          // Security & compliance badges
           SecurityBadgesRow()
 
           Spacer(modifier = Modifier.height(20.dp))
@@ -232,7 +418,7 @@ fun CheckoutDialog(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                  text = "إتمام الدفع الآمن (${String.format(Locale.US, "%.2f", state.amountSar)} ر.س)",
+                  text = "إتمام الدفع الآمن (${com.example.data.model.ArabCountriesData.formatPrice(state.amountSar, country)})",
                   fontFamily = ArefRuqaaFontFamily,
                   style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
@@ -250,7 +436,10 @@ fun CheckoutDialog(
 }
 
 @Composable
-private fun OrderSummaryCard(state: CheckoutUiState) {
+private fun OrderSummaryCard(
+  state: CheckoutUiState,
+  country: com.example.data.model.ArabCountry
+) {
   Card(
     modifier = Modifier.fillMaxWidth(),
     shape = RoundedCornerShape(16.dp),
@@ -303,14 +492,23 @@ private fun OrderSummaryCard(state: CheckoutUiState) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text(
-          text = "الإجمالي المستحق (شامل ضريبة 15%):",
-          style = MaterialTheme.typography.bodySmall.copy(
-            color = SabaqTextSecondary
+        Column {
+          Text(
+            text = "الإجمالي المستحق بالعملة المحلية:",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SabaqTextSecondary
+            )
           )
-        )
+          Text(
+            text = "الدولة: ${country.flagEmoji} ${country.nameAr}",
+            style = MaterialTheme.typography.labelSmall.copy(
+              color = SabaqGreenBright,
+              fontSize = 10.sp
+            )
+          )
+        }
         Text(
-          text = "${String.format(Locale.US, "%.2f", state.amountSar)} ر.س",
+          text = com.example.data.model.ArabCountriesData.formatPrice(state.amountSar, country),
           fontFamily = ArefRuqaaFontFamily,
           style = MaterialTheme.typography.titleLarge.copy(
             fontWeight = FontWeight.Bold,
@@ -323,51 +521,59 @@ private fun OrderSummaryCard(state: CheckoutUiState) {
   }
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 private fun PaymentMethodsSelector(
   selectedMethod: String,
+  country: com.example.data.model.ArabCountry,
   onSelect: (String) -> Unit
 ) {
-  val methods = listOf(
-    Pair("MADA", "مدى Mada"),
-    Pair("APPLE_PAY", "Apple Pay"),
-    Pair("STC_PAY", "STC Pay"),
-    Pair("VISA", "Visa/Master")
-  )
+  val methods = country.paymentMethods
 
-  Row(
+  androidx.compose.foundation.layout.FlowRow(
     modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(8.dp)
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp)
   ) {
-    methods.forEach { (code, label) ->
-      val isSelected = selectedMethod == code
+    methods.forEach { method ->
+      val isSelected = selectedMethod == method.id
       Surface(
         modifier = Modifier
-          .weight(1f)
-          .height(48.dp)
           .clip(RoundedCornerShape(12.dp))
-          .clickable { onSelect(code) }
+          .clickable { onSelect(method.id) }
           .border(
             width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
             shape = RoundedCornerShape(12.dp)
           )
-          .testTag("pay_method_$code"),
-        color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceVariant,
+          .testTag("pay_method_${method.id}"),
+        color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp)
       ) {
-        Box(
-          contentAlignment = Alignment.Center,
-          modifier = Modifier.padding(4.dp)
+        Row(
+          modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+          verticalAlignment = Alignment.CenterVertically
         ) {
-          Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall.copy(
-              fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-              color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-              textAlign = TextAlign.Center
+          Text(text = method.iconEmoji, fontSize = 16.sp)
+          Spacer(modifier = Modifier.width(6.dp))
+          Column {
+            Text(
+              text = method.nameAr,
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+              )
             )
-          )
+            if (method.badgeText != null) {
+              Text(
+                text = method.badgeText,
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontSize = 9.sp,
+                  color = SabaqGoldHighlight
+                )
+              )
+            }
+          }
         }
       }
     }

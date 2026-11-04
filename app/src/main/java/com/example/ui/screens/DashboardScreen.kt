@@ -68,6 +68,7 @@ fun DashboardScreen(
   transactions: List<TransactionRecord>,
   onSelectSubscription: (tierId: String, costSar: Double, tierNameAr: String) -> Unit,
   onRequestPayout: () -> Unit,
+  country: com.example.data.model.ArabCountry = com.example.data.model.ArabCountriesData.EGYPT,
   onTriggerSubscriptionAlert: () -> Unit = {},
   onTriggerSkillUpdateAlert: () -> Unit = {},
   modifier: Modifier = Modifier
@@ -79,11 +80,12 @@ fun DashboardScreen(
     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 100.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp)
   ) {
-    // Top Overview Card
+    // Top Overview Card with Official Logo
     item {
       DeveloperHeroCard(
         currentTier = currentTier,
         subscriptionState = subscriptionState,
+        country = country,
         onRequestPayout = onRequestPayout
       )
     }
@@ -301,6 +303,7 @@ fun DashboardScreen(
         tierId = "FREE",
         tierNameAr = "باقة المستكشف (Starter)",
         costSar = 0.0,
+        country = country,
         description = "لتجربة الوكلاء واختبار المهارات العامة مجاناً.",
         features = listOf(
           "50 استدعاء مجاني لوكلاء الذكاء الاصطناعي شهرياً",
@@ -318,6 +321,7 @@ fun DashboardScreen(
         tierId = "PRO",
         tierNameAr = "باقة المحترف (Pro Creator)",
         costSar = 49.0,
+        country = country,
         description = "الباقة الأكثر شعبية لدعم المطورين واستخدام الوكلاء بدون حدود.",
         features = listOf(
           "استخدام غير محدود لجميع وكلاء ومهارات المتجر",
@@ -337,6 +341,7 @@ fun DashboardScreen(
         tierId = "ENTERPRISE",
         tierNameAr = "باقة المؤسسات ومطوري الوكلاء (Enterprise AI)",
         costSar = 149.0,
+        country = country,
         description = "للشركات والفرق البرمجية الراغبة في أتمتة كاملة واستضافة الوكلاء.",
         features = listOf(
           "نشر واستضافة غير محدودة للوكلاء على خوادم فائقة السرعة",
@@ -423,6 +428,7 @@ fun DashboardScreen(
 private fun DeveloperHeroCard(
   currentTier: String,
   subscriptionState: UserSubscriptionState?,
+  country: com.example.data.model.ArabCountry = com.example.data.model.ArabCountriesData.EGYPT,
   onRequestPayout: () -> Unit
 ) {
   Box(
@@ -453,20 +459,29 @@ private fun DeveloperHeroCard(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Column {
-          Text(
-            text = "لوحة تحكم سبق (Sabaq Hub)",
-            fontFamily = ArefRuqaaFontFamily,
-            style = MaterialTheme.typography.titleMedium.copy(
-              fontWeight = FontWeight.Bold,
-              fontSize = 20.sp,
-              color = SabaqGoldPrimary
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          // الشعار الرسمي المعتمد لصقر سبق في لوحة التحكم
+          com.example.ui.components.SabaqOfficialLogoView(
+            size = 46.dp,
+            showGlow = true,
+            is3dFloating = true
+          )
+          Spacer(modifier = Modifier.width(10.dp))
+          Column {
+            Text(
+              text = "لوحة تحكم سبق (Sabaq Hub)",
+              fontFamily = ArefRuqaaFontFamily,
+              style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 19.sp,
+                color = SabaqGoldPrimary
+              )
             )
-          )
-          Text(
-            text = "حساب مطور ومستخدم ذكاء اصطناعي",
-            style = MaterialTheme.typography.labelSmall.copy(color = SabaqTextSecondary)
-          )
+            Text(
+              text = "حساب مطور ومستخدم ذكاء اصطناعي • ${country.flagEmoji} ${country.nameAr}",
+              style = MaterialTheme.typography.labelSmall.copy(color = SabaqTextSecondary, fontSize = 10.sp)
+            )
+          }
         }
 
         Surface(
@@ -509,15 +524,15 @@ private fun DeveloperHeroCard(
       ) {
         Column {
           Text(
-            text = "الرصيد القابل للسحب:",
+            text = "الرصيد القابل للسحب (${country.currencySymbolAr}):",
             style = MaterialTheme.typography.labelSmall.copy(color = SabaqTextSecondary)
           )
           Text(
-            text = "3,250.00 ر.س",
+            text = com.example.data.model.ArabCountriesData.formatPrice(3250.0, country),
             fontFamily = ArefRuqaaFontFamily,
             style = MaterialTheme.typography.titleLarge.copy(
               fontWeight = FontWeight.Bold,
-              fontSize = 24.sp,
+              fontSize = 22.sp,
               color = SabaqGreenBright
             )
           )
@@ -541,10 +556,10 @@ private fun DeveloperHeroCard(
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-              text = "سحب إلى STC Pay / مدى",
+              text = if (country.code == "EG") "سحب فودافون كاش / إنستاباي" else "سحب إلى STC Pay / مدى",
               fontFamily = ArefRuqaaFontFamily,
               fontWeight = FontWeight.Bold,
-              fontSize = 12.sp,
+              fontSize = 11.sp,
               color = Color(0xFF070B07)
             )
           }
@@ -559,6 +574,7 @@ private fun SubscriptionTierCard(
   tierId: String,
   tierNameAr: String,
   costSar: Double,
+  country: com.example.data.model.ArabCountry = com.example.data.model.ArabCountriesData.EGYPT,
   description: String,
   features: List<String>,
   isCurrent: Boolean,
@@ -629,22 +645,14 @@ private fun SubscriptionTierCard(
 
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-          text = if (costSar == 0.0) "مجاناً" else "${String.format(Locale.US, "%.0f", costSar)}",
+          text = if (costSar == 0.0) "مجاناً" else "${com.example.data.model.ArabCountriesData.formatPrice(costSar, country)} / شهرياً",
           fontFamily = ArefRuqaaFontFamily,
           style = MaterialTheme.typography.headlineMedium.copy(
             fontWeight = FontWeight.Bold,
-            fontSize = 26.sp,
+            fontSize = 22.sp,
             color = SabaqGoldPrimary
           )
         )
-        if (costSar > 0.0) {
-          Spacer(modifier = Modifier.width(4.dp))
-          Text(
-            text = "ر.س / شهرياً",
-            fontFamily = ArefRuqaaFontFamily,
-            style = MaterialTheme.typography.labelMedium.copy(color = SabaqGoldWarm)
-          )
-        }
       }
 
       Spacer(modifier = Modifier.height(12.dp))

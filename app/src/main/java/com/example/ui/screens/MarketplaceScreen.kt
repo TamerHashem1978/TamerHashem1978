@@ -66,15 +66,20 @@ fun MarketplaceScreen(
   onProductClicked: (AgentProduct) -> Unit,
   onTestClicked: (AgentProduct) -> Unit,
   onBuyClicked: (AgentProduct) -> Unit,
+  selectedCountry: com.example.data.model.ArabCountry = com.example.data.model.ArabCountriesData.EGYPT,
+  onOpenCountryPicker: () -> Unit = {},
   modifier: Modifier = Modifier
 ) {
   LazyColumn(
     modifier = modifier.fillMaxSize(),
     contentPadding = PaddingValues(bottom = 90.dp)
   ) {
-    // Hero Banner
+    // Hero Banner with Official Logo & 3D Perspective
     item {
-      MarketplaceHeroBanner()
+      MarketplaceHeroBanner(
+        selectedCountry = selectedCountry,
+        onOpenCountryPicker = onOpenCountryPicker
+      )
     }
 
     // Search and Filter Bar
@@ -144,6 +149,7 @@ fun MarketplaceScreen(
       items(products, key = { it.id }) { product ->
         AgentProductCard(
           product = product,
+          country = selectedCountry,
           onClick = { onProductClicked(product) },
           onTestClick = { onTestClicked(product) },
           onBuyClick = { onBuyClicked(product) },
@@ -155,93 +161,139 @@ fun MarketplaceScreen(
 }
 
 @Composable
-private fun MarketplaceHeroBanner() {
-  Box(
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(16.dp)
-      .clip(RoundedCornerShape(22.dp))
-      .background(
-        Brush.horizontalGradient(
-          listOf(
-            SabaqGreenSection,
-            SabaqGreenCard
-          )
-        )
-      )
-      .border(
-        width = 1.dp,
-        brush = Brush.linearGradient(
-          listOf(SabaqGoldPrimary.copy(alpha = 0.5f), SabaqGreenBright.copy(alpha = 0.3f))
-        ),
-        shape = RoundedCornerShape(22.dp)
-      )
+private fun MarketplaceHeroBanner(
+  selectedCountry: com.example.data.model.ArabCountry,
+  onOpenCountryPicker: () -> Unit
+) {
+  com.example.ui.components.Sabaq3DPerspectiveContainer(
+    tiltAngleX = 2.0f,
+    tiltAngleY = -3.0f,
+    modifier = Modifier.padding(16.dp)
   ) {
-    Row(
+    Box(
       modifier = Modifier
         .fillMaxWidth()
-        .padding(18.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.SpaceBetween
+        .clip(RoundedCornerShape(22.dp))
+        .background(
+          Brush.horizontalGradient(
+            listOf(
+              SabaqGreenSection,
+              SabaqGreenCard
+            )
+          )
+        )
+        .border(
+          width = 1.2.dp,
+          brush = Brush.linearGradient(
+            listOf(SabaqGoldHighlight, SabaqGoldPrimary, SabaqGreenBright.copy(alpha = 0.4f))
+          ),
+          shape = RoundedCornerShape(22.dp)
+        )
     ) {
-      Column(modifier = Modifier.weight(1f)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Box(
-            modifier = Modifier
-              .size(26.dp)
-              .clip(CircleShape)
-              .background(SabaqGoldPrimary.copy(alpha = 0.2f)),
-            contentAlignment = Alignment.Center
-          ) {
-            Icon(
-              imageVector = Icons.Default.Bolt,
-              contentDescription = null,
-              tint = SabaqGoldPrimary,
-              modifier = Modifier.size(16.dp)
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(18.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+      ) {
+        Column(modifier = Modifier.weight(1f)) {
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+              modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(SabaqGoldPrimary.copy(alpha = 0.2f)),
+              contentAlignment = Alignment.Center
+            ) {
+              Icon(
+                imageVector = Icons.Default.Bolt,
+                contentDescription = null,
+                tint = SabaqGoldPrimary,
+                modifier = Modifier.size(14.dp)
+              )
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+              text = "سَبَق AI • لكل العرب ومصر",
+              fontFamily = ArefRuqaaFontFamily,
+              style = MaterialTheme.typography.labelMedium.copy(
+                color = SabaqGoldHighlight,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp
+              )
             )
           }
-          Spacer(modifier = Modifier.width(8.dp))
+
+          Spacer(modifier = Modifier.height(6.dp))
+
           Text(
-            text = "منصة سَبَق للذكاء الاصطناعي",
+            text = "معرض وكلاء الذكاء الاصطناعي 3D",
             fontFamily = ArefRuqaaFontFamily,
-            style = MaterialTheme.typography.labelMedium.copy(
-              color = SabaqGoldHighlight,
+            style = MaterialTheme.typography.titleLarge.copy(
               fontWeight = FontWeight.Bold,
-              fontSize = 13.sp
+              fontSize = 20.sp,
+              color = SabaqGoldPrimary
             )
           )
+
+          Spacer(modifier = Modifier.height(4.dp))
+
+          Text(
+            text = "تصفح واشترِ وكلاء جاهزين للأعمال بالعملة المحلية، أو اختبر مهاراتهم في المختبر الذكي.",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SabaqTextSecondary,
+              lineHeight = 17.sp,
+              fontSize = 11.sp
+            )
+          )
+
+          Spacer(modifier = Modifier.height(10.dp))
+
+          // Country & Currency Switcher Pill
+          Surface(
+            modifier = Modifier
+              .clip(RoundedCornerShape(20.dp))
+              .clickable { onOpenCountryPicker() }
+              .border(1.dp, SabaqGoldPrimary.copy(alpha = 0.6f), RoundedCornerShape(20.dp)),
+            color = SabaqGreenSection.copy(alpha = 0.9f)
+          ) {
+            Row(
+              modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Text(text = selectedCountry.flagEmoji, fontSize = 14.sp)
+              Spacer(modifier = Modifier.width(6.dp))
+              Text(
+                text = "العملة: ${selectedCountry.currencyNameAr} (${selectedCountry.currencySymbolAr})",
+                fontFamily = ArefRuqaaFontFamily,
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontWeight = FontWeight.Bold,
+                  fontSize = 11.sp,
+                  color = SabaqGoldHighlight
+                )
+              )
+              Spacer(modifier = Modifier.width(4.dp))
+              Text(
+                text = "• تغيير",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontSize = 10.sp,
+                  color = SabaqGreenBright
+                )
+              )
+            }
+          }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.width(10.dp))
 
-        Text(
-          text = "وكلاء أذكياء جاهزون للأعمال والأتمتة",
-          fontFamily = ArefRuqaaFontFamily,
-          style = MaterialTheme.typography.titleLarge.copy(
-            fontWeight = FontWeight.Bold,
-            fontSize = 21.sp,
-            color = SabaqGoldPrimary
-          )
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-          text = "تصفح واشترِ وكلاء متعددي المهام، أو اختبر مهاراتهم مباشرة في بيئة آمنة قبل الشراء على gosabaq.com.",
-          style = MaterialTheme.typography.bodySmall.copy(
-            color = SabaqTextSecondary,
-            lineHeight = 18.sp
-          )
+        // الشعار الرسمي المعتمد لصقر سبق في البانر ثلاثي الأبعاد
+        com.example.ui.components.SabaqOfficialLogoView(
+          size = 78.dp,
+          showGlow = true,
+          is3dFloating = true
         )
       }
-
-      Spacer(modifier = Modifier.width(12.dp))
-
-      // روبوت سبق الذكي في واجهة البانر
-      SabaqMascotRobotView(
-        size = 80.dp,
-        subtitle = "مساعدك الذكي"
-      )
     }
   }
 }
@@ -297,6 +349,7 @@ private fun CategoriesRow(
 @Composable
 fun AgentProductCard(
   product: AgentProduct,
+  country: com.example.data.model.ArabCountry = com.example.data.model.ArabCountriesData.EGYPT,
   onClick: () -> Unit,
   onTestClick: () -> Unit,
   onBuyClick: () -> Unit,
@@ -425,21 +478,12 @@ fun AgentProductCard(
         Column {
           Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-              text = "${String.format(Locale.US, "%.0f", product.priceSar)}",
+              text = com.example.data.model.ArabCountriesData.formatPrice(product.priceSar, country),
               fontFamily = ArefRuqaaFontFamily,
               style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 color = SabaqGoldPrimary
-              )
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-              text = "ر.س",
-              fontFamily = ArefRuqaaFontFamily,
-              style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Bold,
-                color = SabaqGoldWarm
               )
             )
           }

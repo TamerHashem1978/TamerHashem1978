@@ -23,7 +23,7 @@
       --green-card: #05311C;
       --green-card-hover: #073D23;
       --green-section: #052316;
-      --bg-color: #070B07;
+      --bg-color: #020502;
       --text-primary: #D5E5D2;
       --text-secondary: #8DA18F;
       --text-muted: #6F8272;
@@ -45,6 +45,18 @@
       overflow-x: hidden;
       position: relative;
       line-height: 1.6;
+      perspective: 1200px;
+    }
+
+    .bg-grid-pattern {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(249, 173, 16, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249, 173, 16, 0.03) 1px, transparent 1px);
+      background-size: 38px 38px;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .quran-watermark {
@@ -52,8 +64,8 @@
       inset: 0;
       pointer-events: none;
       font-family: 'Amiri Quran', serif;
-      font-size: 8rem;
-      color: rgba(249, 173, 16, 0.02);
+      font-size: 9rem;
+      color: rgba(249, 173, 16, 0.015);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -62,11 +74,12 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 24px 20px;
+      padding: 20px 20px 60px;
       position: relative;
       z-index: 1;
+      transform-style: preserve-3d;
     }
 
     /* HEADER */
@@ -74,15 +87,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 28px;
-      background: rgba(5, 35, 22, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border-subtle);
+      padding: 14px 24px;
+      background: rgba(5, 35, 22, 0.9);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid var(--border-subtle);
       border-radius: 20px;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       position: sticky;
       top: 16px;
       z-index: 100;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(249, 173, 16, 0.1);
     }
 
     .brand {
@@ -92,19 +106,33 @@
       text-decoration: none;
     }
 
-    .brand-logo {
-      width: 46px;
-      height: 46px;
+    /* OFFICIAL LOGO STYLES */
+    .brand-logo-wrap {
+      position: relative;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold-shadow), var(--gold-primary));
+      background: #010100;
+      border: 2px solid var(--gold-primary);
+      box-shadow: 0 0 18px rgba(249, 173, 16, 0.5);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Aref Ruqaa', serif;
-      font-weight: bold;
-      color: var(--bg-color);
-      font-size: 26px;
-      box-shadow: 0 0 15px rgba(249, 173, 16, 0.4);
+      flex-shrink: 0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .brand-logo-wrap:hover {
+      transform: scale(1.08) rotate(5deg);
+      box-shadow: 0 0 24px rgba(249, 173, 16, 0.8);
+    }
+
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .brand-title-wrap {
@@ -137,8 +165,8 @@
     nav a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 14px;
+      font-weight: 600;
       transition: color 0.2s;
     }
 
@@ -149,7 +177,59 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+    }
+
+    /* COUNTRY SELECTOR */
+    .country-selector-wrap {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--gold-primary);
+      border-radius: 12px;
+      padding: 4px 8px;
+      gap: 6px;
+      box-shadow: 0 0 10px rgba(249, 173, 16, 0.15);
+    }
+
+    .country-selector-select {
+      background: transparent;
+      border: none;
+      color: var(--gold-light);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      direction: rtl;
+    }
+
+    .country-selector-select option {
+      background: #052316;
+      color: #D5E5D2;
+    }
+
+    /* 3D MODE TOGGLE */
+    .btn-3d-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-primary);
+      background: rgba(249, 173, 16, 0.1);
+      border: 1px solid var(--gold-primary);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-3d-toggle.active {
+      background: linear-gradient(135deg, var(--gold-deep), var(--gold-primary));
+      color: #010100;
+      box-shadow: 0 0 18px rgba(249, 173, 16, 0.6);
     }
 
     /* BUTTONS */
@@ -162,7 +242,7 @@
       font-family: 'Aref Ruqaa', serif;
       font-size: 16px;
       font-weight: bold;
-      color: var(--bg-color);
+      color: #010100;
       background: linear-gradient(135deg, var(--gold-shadow) 0%, var(--gold-deep) 14%, var(--gold-button) 30%, var(--gold-primary) 44%, var(--gold-highlight) 54%, var(--gold-warm) 64%, var(--gold-button) 78%, var(--gold-shadow) 100%);
       border: none;
       border-radius: 12px;
@@ -181,9 +261,9 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 9px 18px;
+      padding: 8px 16px;
       font-family: 'Tajawal', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--gold-primary);
       background: rgba(249, 173, 16, 0.08);
@@ -205,28 +285,43 @@
       border-radius: 9px;
     }
 
-    /* HERO */
-    .hero {
-      text-align: center;
-      padding: 48px 24px;
-      background: linear-gradient(180deg, var(--green-card) 0%, var(--green-section) 100%);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 24px;
+    /* HERO 3D WRAPPER */
+    .hero-3d-wrapper {
+      perspective: 1200px;
       margin-bottom: 40px;
-      position: relative;
-      overflow: hidden;
     }
 
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 400px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(249, 173, 16, 0.15) 0%, transparent 70%);
-      pointer-events: none;
+    .hero {
+      position: relative;
+      background: linear-gradient(180deg, #063820 0%, #031D12 100%);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 28px;
+      padding: 44px 30px;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(249, 173, 16, 0.15);
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .hero-content-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 32px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-text-side {
+      text-align: right;
+    }
+
+    .hero-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
     }
 
     .hero-badge {
@@ -234,47 +329,158 @@
       align-items: center;
       gap: 8px;
       background: rgba(249, 173, 16, 0.12);
-      border: 1px solid rgba(249, 173, 16, 0.4);
-      padding: 6px 16px;
+      border: 1px solid rgba(249, 173, 16, 0.45);
+      padding: 5px 14px;
       border-radius: 50px;
       color: var(--gold-primary);
       font-size: 13px;
       font-weight: 700;
-      margin-bottom: 16px;
+    }
+
+    .hero-country-badge {
+      background: rgba(13, 100, 33, 0.35);
+      border: 1px solid var(--green-bright);
+      color: #79F384;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .hero h1 {
       font-family: 'Aref Ruqaa', serif;
-      font-size: 38px;
-      margin-bottom: 14px;
+      font-size: 42px;
+      margin-bottom: 16px;
       background: linear-gradient(135deg, var(--gold-bronze) 0%, var(--gold-primary) 50%, var(--gold-highlight) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      line-height: 1.3;
+      line-height: 1.25;
+      text-shadow: 0 4px 20px rgba(249, 173, 16, 0.2);
     }
 
     .hero p {
-      font-size: 17px;
+      font-size: 16px;
       color: var(--text-secondary);
-      max-width: 720px;
-      margin: 0 auto 28px;
       line-height: 1.7;
+      margin-bottom: 26px;
+    }
+
+    /* 3D FLOATING FALCON LOGO EMBLEM */
+    .hero-emblem-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    .falcon-3d-stage {
+      position: relative;
+      width: 270px;
+      height: 270px;
+      transform-style: preserve-3d;
+      animation: floatFalcon 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatFalcon {
+      0% {
+        transform: translateY(0px) rotateY(-8deg) rotateX(6deg);
+      }
+      50% {
+        transform: translateY(-12px) rotateY(4deg) rotateX(-4deg);
+      }
+      100% {
+        transform: translateY(-20px) rotateY(10deg) rotateX(8deg);
+      }
+    }
+
+    .falcon-3d-glow {
+      position: absolute;
+      inset: -20px;
+      background: radial-gradient(circle, rgba(249, 173, 16, 0.35) 0%, rgba(13, 100, 33, 0.15) 50%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(25px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .falcon-orbit-ring {
+      position: absolute;
+      inset: -15px;
+      border: 1.5px dashed rgba(249, 173, 16, 0.4);
+      border-radius: 50%;
+      transform: rotateX(65deg) translateZ(-20px);
+      animation: spinOrbit 16s linear infinite;
+    }
+
+    @keyframes spinOrbit {
+      from { transform: rotateX(65deg) rotate(0deg); }
+      to { transform: rotateX(65deg) rotate(360deg); }
+    }
+
+    .falcon-logo-card {
+      position: absolute;
+      inset: 15px;
+      background: #010100;
+      border-radius: 28px;
+      border: 2px solid var(--gold-primary);
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.9),
+        0 0 25px rgba(249, 173, 16, 0.4),
+        inset 0 0 20px rgba(249, 173, 16, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      transform: translateZ(40px);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .falcon-logo-card:hover {
+      transform: translateZ(60px) scale(1.05);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.95), 0 0 35px rgba(249, 173, 16, 0.7);
+    }
+
+    .falcon-logo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 12px rgba(249, 173, 16, 0.4));
+    }
+
+    .falcon-3d-tag {
+      position: absolute;
+      bottom: -15px;
+      background: linear-gradient(135deg, var(--gold-shadow), var(--gold-primary));
+      color: #010100;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      transform: translateZ(60px);
+      white-space: nowrap;
     }
 
     .hero-stats {
       display: flex;
-      justify-content: center;
-      gap: 40px;
+      justify-content: space-between;
+      gap: 20px;
       flex-wrap: wrap;
-      margin-top: 20px;
+      margin-top: 30px;
       padding-top: 24px;
-      border-top: 1px solid rgba(249, 173, 16, 0.15);
+      border-top: 1px solid rgba(249, 173, 16, 0.18);
     }
 
     .stat-item {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
     }
 
     .stat-num {
@@ -292,6 +498,7 @@
     /* SHOWCASE SECTION */
     .showcase-section {
       margin-bottom: 60px;
+      position: relative;
     }
 
     .section-header {
@@ -309,7 +516,7 @@
       color: var(--gold-primary);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 4px;
     }
 
@@ -330,6 +537,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
     .categories-bar {
@@ -358,7 +566,7 @@
 
     .cat-btn.active {
       background: linear-gradient(135deg, var(--gold-deep), var(--gold-primary));
-      color: var(--bg-color);
+      color: #010100;
       font-weight: 700;
       border-color: var(--gold-light);
     }
@@ -392,29 +600,51 @@
       border-color: var(--gold-primary);
     }
 
-    /* SKILLS GRID */
+    /* 3D SKILLS GRID */
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
       gap: 24px;
+      perspective: 1000px;
+    }
+
+    /* 3D TILT SKILL CARD */
+    .skill-card-3d-wrap {
+      perspective: 1000px;
+      transform-style: preserve-3d;
     }
 
     .skill-card {
       background: var(--green-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 20px;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 22px;
       padding: 24px;
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
       overflow: hidden;
+      transform-style: preserve-3d;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      cursor: default;
+    }
+
+    .card-glare {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 243, 120, 0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 10;
+    }
+
+    .skill-card:hover .card-glare {
+      opacity: 1;
     }
 
     .skill-card:hover {
-      transform: translateY(-4px);
       border-color: var(--gold-primary);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(249, 173, 16, 0.15);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(249, 173, 16, 0.25);
       background: var(--green-card-hover);
     }
 
@@ -423,7 +653,7 @@
       top: 14px;
       left: 14px;
       background: linear-gradient(135deg, var(--gold-shadow), var(--gold-primary));
-      color: var(--bg-color);
+      color: #010100;
       font-size: 11px;
       font-weight: 800;
       padding: 3px 10px;
@@ -431,6 +661,8 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      z-index: 5;
+      transform: translateZ(25px);
     }
 
     .skill-card-top {
@@ -438,6 +670,7 @@
       align-items: flex-start;
       gap: 14px;
       margin-bottom: 14px;
+      transform: translateZ(20px);
     }
 
     .skill-icon-box {
@@ -451,11 +684,13 @@
       justify-content: center;
       font-size: 26px;
       flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transform: translateZ(30px);
     }
 
     .skill-title-meta {
       flex: 1;
-      padding-left: 50px; /* space for badge */
+      padding-left: 50px;
     }
 
     .skill-card-title {
@@ -485,48 +720,47 @@
       line-height: 1.6;
       margin-bottom: 16px;
       flex: 1;
+      transform: translateZ(15px);
     }
 
-    /* TOOLS BADGES */
     .tools-wrap {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 16px;
+      transform: translateZ(20px);
     }
 
     .tool-badge {
       background: rgba(13, 100, 33, 0.35);
       border: 1px solid rgba(48, 169, 51, 0.3);
-      color: #A3D9A5;
+      color: #A5DCA7;
       font-size: 11px;
-      font-weight: 600;
       padding: 3px 8px;
       border-radius: 6px;
       font-family: monospace;
-      letter-spacing: 0.3px;
     }
 
-    /* METRICS STRIP */
-    .skill-metrics {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+    .metrics-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(249, 173, 16, 0.12);
       border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 18px;
-      text-align: center;
+      padding: 8px 14px;
+      margin-bottom: 16px;
+      transform: translateZ(20px);
     }
 
-    .metric-col {
+    .metric-group {
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     .metric-val {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--text-primary);
     }
@@ -540,7 +774,6 @@
       color: var(--text-muted);
     }
 
-    /* PRICE & ACTIONS */
     .skill-card-footer {
       display: flex;
       align-items: center;
@@ -549,6 +782,7 @@
       padding-top: 14px;
       border-top: 1px solid rgba(249, 173, 16, 0.15);
       margin-top: auto;
+      transform: translateZ(25px);
     }
 
     .price-box {
@@ -568,10 +802,9 @@
       color: var(--gold-primary);
     }
 
-    .price-free {
-      color: #55E060;
-      font-size: 16px;
-      font-weight: 700;
+    .price-converted-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
     }
 
     .card-actions-group {
@@ -579,12 +812,12 @@
       gap: 8px;
     }
 
-    /* MODAL (SANDBOX & CHECKOUT) */
+    /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.82);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -601,12 +834,12 @@
       border: 1.5px solid var(--gold-primary);
       border-radius: 24px;
       width: 100%;
-      max-width: 650px;
+      max-width: 680px;
       max-height: 90vh;
       overflow-y: auto;
-      padding: 30px;
+      padding: 28px;
       position: relative;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(249, 173, 16, 0.2);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(249, 173, 16, 0.25);
     }
 
     .modal-close {
@@ -636,7 +869,10 @@
       font-family: 'Aref Ruqaa', serif;
       font-size: 24px;
       color: var(--gold-primary);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .modal-subtitle {
@@ -712,6 +948,89 @@
       margin-bottom: 6px;
     }
 
+    /* 3D VIRTUAL CARD IN CHECKOUT */
+    .checkout-3d-card {
+      background: linear-gradient(135deg, #010100 0%, #05311C 60%, #094727 100%);
+      border: 1.5px solid var(--gold-primary);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(249, 173, 16, 0.2);
+      overflow: hidden;
+    }
+
+    .checkout-3d-card::before {
+      content: "";
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(249, 173, 16, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .card-chip {
+      width: 40px;
+      height: 28px;
+      background: linear-gradient(135deg, #F8DB5F, #D8870E);
+      border-radius: 6px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
+    }
+
+    .card-number-preview {
+      font-family: monospace;
+      font-size: 18px;
+      letter-spacing: 2px;
+      color: var(--gold-light);
+      margin-bottom: 14px;
+    }
+
+    .card-bottom-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* PAYMENT METHODS GRID */
+    .pay-methods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .pay-method-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: all 0.2s;
+    }
+
+    .pay-method-card:hover, .pay-method-card.selected {
+      border-color: var(--gold-primary);
+      background: rgba(249, 173, 16, 0.15);
+      box-shadow: 0 0 14px rgba(249, 173, 16, 0.2);
+    }
+
     /* TOAST */
     .toast-msg {
       position: fixed;
@@ -719,7 +1038,7 @@
       left: 50%;
       transform: translateX(-50%) translateY(100px);
       background: linear-gradient(135deg, var(--gold-shadow), var(--gold-primary));
-      color: var(--bg-color);
+      color: #010100;
       font-family: 'Aref Ruqaa', serif;
       font-size: 16px;
       font-weight: bold;
@@ -735,10 +1054,10 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* IN-APP TOAST BANNER NOTIFICATION */
+    /* IN-APP TOAST BANNER */
     .web-toast-banner {
       position: fixed;
-      top: 90px;
+      top: 86px;
       left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 40px);
@@ -750,7 +1069,7 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(249, 173, 16, 0.25);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(249, 173, 16, 0.3);
       z-index: 999;
       animation: slideDownToast 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -806,34 +1125,6 @@
       color: var(--gold-primary);
     }
 
-    /* PAYMENT OPTIONS */
-    .pay-methods-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .pay-method-card {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      transition: all 0.2s;
-    }
-
-    .pay-method-card:hover, .pay-method-card.selected {
-      border-color: var(--gold-primary);
-      background: rgba(249, 173, 16, 0.12);
-    }
-
     footer {
       text-align: center;
       padding: 36px 20px;
@@ -842,14 +1133,39 @@
       font-size: 14px;
     }
 
+    @media (max-width: 900px) {
+      .hero-content-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-text-side {
+        text-align: center;
+      }
+      .hero-badge-row {
+        justify-content: center;
+      }
+      .hero-stats {
+        justify-content: center;
+      }
+      .stat-item {
+        align-items: center;
+      }
+      .hero-emblem-side {
+        margin-top: 20px;
+      }
+    }
+
     @media (max-width: 768px) {
       header {
         flex-direction: column;
-        gap: 14px;
+        gap: 12px;
         align-items: stretch;
       }
       nav {
         justify-content: center;
+      }
+      .header-actions {
+        justify-content: space-between;
       }
       .skills-grid {
         grid-template-columns: 1fr;
@@ -865,29 +1181,59 @@
   </style>
 </head>
 <body>
+  <div class="bg-grid-pattern"></div>
   <div class="quran-watermark">سبق</div>
 
   <div class="container">
     <!-- HEADER -->
-    <header>
+    <header id="mainHeader">
       <a href="/" class="brand">
-        <div class="brand-logo">س</div>
+        <!-- OFFICIAL LOGO -->
+        <div class="brand-logo-wrap" title="شعار سبق الرسمي">
+          <img src="/assets/aistudio/2026-10-12____-logo_043545a9.png" alt="شعار سبق الرسمي" class="brand-logo-img">
+        </div>
         <div class="brand-title-wrap">
           <div class="brand-title">سبق | Sabaq</div>
           <div class="brand-sub">gosabaq.com</div>
         </div>
       </a>
+
       <nav>
         <a href="#showcase" class="active">معرض المهارات</a>
         <a href="#categories">التصنيفات</a>
         <a href="#about">عن المنصة</a>
       </nav>
+
       <div class="header-actions">
+        <!-- COUNTRY & CURRENCY SWITCHER -->
+        <div class="country-selector-wrap" title="تغيير الدولة والعملة">
+          <span id="activeFlagIcon">🇪🇬</span>
+          <select id="countrySelect" class="country-selector-select" onchange="onCountryChanged(this.value)">
+            <option value="EG" selected>مصر (ج.م EGP)</option>
+            <option value="SA">السعودية (ر.س SAR)</option>
+            <option value="AE">الإمارات (د.إ AED)</option>
+            <option value="KW">الكويت (د.ك KWD)</option>
+            <option value="QA">قطر (ر.ق QAR)</option>
+            <option value="JO">الأردن (د.أ JOD)</option>
+            <option value="MA">المغرب (د.م MAD)</option>
+            <option value="DZ">الجزائر (د.ج DZD)</option>
+            <option value="TN">تونس (د.ت TND)</option>
+            <option value="OM">عُمان (ر.ع OMR)</option>
+            <option value="BH">البحرين (د.ب BHD)</option>
+            <option value="IQ">العراق (د.ع IQD)</option>
+            <option value="GLOBAL">دولي ($ USD)</option>
+          </select>
+        </div>
+
+        <!-- 3D MODE TOGGLE -->
+        <button id="toggle3dBtn" class="btn-3d-toggle active" onclick="toggle3DMode()" title="تبديل العرض ثلاثي الأبعاد">
+          <span>🎮</span> <span>عرض 3D</span>
+        </button>
+
+        <!-- NOTIFICATION BELL -->
         <button onclick="toggleWebNotifications()" class="btn-outline btn-sm" style="position: relative;" title="تنبيهات المنصة">
           🔔 <span id="webNotifBadge" style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #F9AD10; border-radius: 50%;"></span>
         </button>
-        <button onclick="openSandbox(skillsData[0].id)" class="btn-outline btn-sm">🧪 تجربة المختبر</button>
-        <a href="#showcase" class="btn-gold btn-sm">تصفح السوق</a>
       </div>
     </header>
 
@@ -903,50 +1249,74 @@
     </div>
 
     <main>
-      <!-- HERO -->
-      <section class="hero">
-        <div class="hero-badge">✨ سوق وكلاء الذكاء الاصطناعي الأول باللغة العربية والأنظمة السعودية</div>
-        <h1>منصة سبق لمنتجات ومهارات وكلاء الذكاء الاصطناعي</h1>
-        <p>المنصة السعودية المتكاملة لبناء، اختبار، مشاركة، وتحصيل مبيعات مهارات وكلاء الذكاء الاصطناعي. ابدأ تشغيل واستخدام وكلاء مهندسين للأنظمة والأعمال اليوم.</p>
+      <!-- HERO SECTION WITH 3D INTERACTIVE PRESENTATION -->
+      <div class="hero-3d-wrapper">
+        <section class="hero" id="heroCard">
+          <div class="hero-content-grid">
+            <div class="hero-text-side">
+              <div class="hero-badge-row">
+                <div class="hero-badge">✨ سوق وكلاء الذكاء الاصطناعي العربي المتكامل</div>
+                <div class="hero-country-badge" id="heroCountryBadge">
+                  <span>🇪🇬 موجه لمصر ولكل الدول العربية 🇸🇦 🇦🇪 🇰🇼 🇶🇦</span>
+                </div>
+              </div>
 
-        <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
-          <a href="#showcase" class="btn-gold">🌟 استكشف معرض المهارات المميزة</a>
-          <button onclick="openSandbox(skillsData[1].id)" class="btn-outline">⚡ جرّب وكيل سلة وزد مجاناً</button>
-        </div>
+              <h1>منصة سبق لمنتجات ومهارات وكلاء الذكاء الاصطناعي</h1>
+              <p>المنصة العربية المتكاملة لبناء، اختبار، ومشاركة وتحصيل مبيعات مهارات وكلاء الذكاء الاصطناعي بالعملات المحلية وطرق الدفع المعتمدة (إنستاباي، فودافون كاش، فوري، مدى، وApple Pay).</p>
 
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-num">+150,000</span>
-            <span class="stat-label">عملية استدلال وتشغيل ناجحة</span>
+              <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                <a href="#showcase" class="btn-gold">🌟 استكشف معرض المهارات المميزة</a>
+                <button onclick="openSandbox(skillsData[0].id)" class="btn-outline">⚡ جرّب وكيل العقود والامتثال</button>
+              </div>
+
+              <div class="hero-stats">
+                <div class="stat-item">
+                  <span class="stat-num">+150,000</span>
+                  <span class="stat-label">عملية استدلال وتشغيل ناجحة</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num">98.4%</span>
+                  <span class="stat-label">متوسط دقة وتوافق المهارات</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num" id="heroPayMethodsStat">InstaPay & Mada</span>
+                  <span class="stat-label">سداد محلي مباشر بالعملة الوطنية</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num">100%</span>
+                  <span class="stat-label">توافق مع الأنظمة واللوائح العربية</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3D FLOATING FALCON LOGO EMBLEM -->
+            <div class="hero-emblem-side">
+              <div class="falcon-3d-stage" id="falconStage">
+                <div class="falcon-3d-glow"></div>
+                <div class="falcon-orbit-ring"></div>
+                <div class="falcon-logo-card" title="شعار سبق الرسمي — الصقر السيبراني الذهبي">
+                  <img src="/assets/aistudio/2026-10-12____-logo_043545a9.png" alt="شعار سبق الرسمي">
+                  <div class="falcon-3d-tag">SABAQ • سبق الذكاء الاصطناعي</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="stat-item">
-            <span class="stat-num">98.4%</span>
-            <span class="stat-label">متوسط دقة وتوافق المهارات</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num">100%</span>
-            <span class="stat-label">سداد آمن (مدى، Apple Pay، STC Pay)</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num">ZATCA & SA</span>
-            <span class="stat-label">متوافق مع الأنظمة واللوائح السعودية</span>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <!-- FEATURED SKILLS SHOWCASE SECTION -->
       <section id="showcase" class="showcase-section">
         <div class="section-header">
           <div class="section-title-wrap">
             <h2>🏆 معرض المهارات المميزة (Featured Skills Showcase)</h2>
-            <p>اختر من بين أقوى مهارات وكلاء الذكاء الاصطناعي المعتمدة والمبنية على منصة سبق، مع إمكانية التجربة اللحظية والشراء المباشر.</p>
+            <p>اختر من بين أقوى مهارات وكلاء الذكاء الاصطناعي المعتمدة، مع تجربة فورية بالمختبر وشراء مباشر بالعملة المحلية.</p>
           </div>
           <div>
             <span id="skillsCount" style="color: var(--gold-light); font-size: 14px; font-weight: 700;">عرض 6 مهارات متقدمة</span>
           </div>
         </div>
 
-        <!-- TOOLBAR: FILTERS & SORTING -->
+        <!-- TOOLBAR: FILTERS, COUNTRY & SORTING -->
         <div class="toolbar-card">
           <!-- Category Filter Buttons -->
           <div class="categories-bar" id="categoryFilters">
@@ -971,7 +1341,7 @@
           </div>
         </div>
 
-        <!-- SKILLS CARDS GRID -->
+        <!-- SKILLS CARDS GRID (3D TILT ENABLED) -->
         <div class="skills-grid" id="skillsGrid">
           <!-- Populated dynamically via JavaScript -->
         </div>
@@ -983,7 +1353,7 @@
       <div class="modal-box">
         <button class="modal-close" onclick="closeSandbox()">✕</button>
         <div class="modal-title" id="sandboxTitle">⚡ المختبر الفوري لتجربة المهارة</div>
-        <div class="modal-subtitle" id="sandboxSubtitle">اختبر استجابة الوكيل ومسار الاستدلال (Reasoning Steps) لحظياً.</div>
+        <div class="modal-subtitle">اختبر استجابة الوكيل ومسار الاستدلال (Reasoning Steps) لحظياً قبل الشراء.</div>
 
         <label style="font-size: 13px; color: var(--gold-light); font-weight: 700; margin-bottom: 6px; display: block;">أمثلة جاهزة للبدء السريع:</label>
         <div class="sandbox-quick-prompts" id="sandboxPrompts"></div>
@@ -1003,54 +1373,73 @@
       </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- 3D CHECKOUT MODAL WITH LOCAL CURRENCY & LOCAL METHODS -->
     <div class="modal-overlay" id="checkoutModal">
       <div class="modal-box">
         <button class="modal-close" onclick="closeCheckout()">✕</button>
-        <div class="modal-title" id="checkoutTitle">💳 إتمام الشراء والاشتراك الآمن</div>
-        <div class="modal-subtitle">بوابة الدفع الرسمية لمنصة سبق (gosabaq.com) بالريال السعودي.</div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--gold-primary); background: #010100;">
+            <img src="/assets/aistudio/2026-10-12____-logo_043545a9.png" alt="شعار سبق" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="modal-title" style="margin: 0;">💳 إتمام الشراء والاشتراك الآمن</div>
+        </div>
+        <div class="modal-subtitle" id="checkoutSubtitle">بوابة الدفع الرسمية لمنصة سبق (gosabaq.com) بالعملة المحلية.</div>
 
-        <div style="background: rgba(0,0,0,0.3); border-radius: 14px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-subtle);">
+        <!-- 3D VIRTUAL CARD PREVIEW -->
+        <div class="checkout-3d-card" id="virtualCard">
+          <div class="card-row-top">
+            <div class="card-chip"></div>
+            <div style="display: flex; align-items: center; gap: 6px; color: var(--gold-light); font-weight: 700; font-size: 14px;">
+              <span>سبق</span>
+              <span id="cardCountryBadge">🇪🇬 مصر</span>
+            </div>
+          </div>
+          <div class="card-number-preview" id="cardNumberPreview">•••• •••• •••• 9842</div>
+          <div class="card-bottom-info">
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted);">حامل البطاقة / الحساب</div>
+              <div style="color: var(--gold-highlight); font-weight: 700;" id="cardHolderPreview">مطور ذكاء اصطناعي</div>
+            </div>
+            <div>
+              <div style="font-size: 10px; color: var(--text-muted);">صالح حتى</div>
+              <div style="color: var(--gold-light); font-weight: 700;">12/28</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRICING SUMMARY -->
+        <div style="background: rgba(0,0,0,0.35); border-radius: 14px; padding: 16px; margin-bottom: 18px; border: 1px solid var(--border-subtle);">
           <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="color: var(--text-secondary);">المهارة / المنتج:</span>
+            <span style="color: var(--text-secondary);">المهارة / الباقة:</span>
             <span id="checkoutItemName" style="color: var(--gold-primary); font-weight: 700;">-</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="color: var(--text-secondary);">السعر الأساسي:</span>
+            <span style="color: var(--text-secondary);">السعر بالعملة المحلية:</span>
             <span id="checkoutBasePrice" style="color: var(--text-primary); font-weight: 600;">-</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="color: var(--text-secondary);">ضريبة القيمة المضافة (15%):</span>
+            <span style="color: var(--text-secondary);">ضريبة القيمة المضافة:</span>
             <span id="checkoutVat" style="color: var(--text-primary); font-weight: 600;">-</span>
           </div>
           <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 10px;">
-            <span style="color: var(--gold-light); font-weight: 700;">الإجمالي النهائي:</span>
-            <span id="checkoutTotalPrice" style="color: var(--gold-highlight); font-family: 'Aref Ruqaa', serif; font-size: 22px; font-weight: 700;">-</span>
+            <span style="color: var(--gold-light); font-weight: 700;">الإجمالي النهائي المستحق:</span>
+            <span id="checkoutTotalPrice" style="color: var(--gold-highlight); font-family: 'Aref Ruqaa', serif; font-size: 24px; font-weight: 700;">-</span>
           </div>
         </div>
 
-        <label style="font-size: 13px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px; display: block;">اختر وسيلة الدفع المعتمدة:</label>
-        <div class="pay-methods-grid">
-          <div class="pay-method-card selected" onclick="selectPayMethod(this, 'MADA')">
-            <span>🟢</span> <span>مدى (Mada)</span>
-          </div>
-          <div class="pay-method-card" onclick="selectPayMethod(this, 'APPLE_PAY')">
-            <span>🍏</span> <span>Apple Pay</span>
-          </div>
-          <div class="pay-method-card" onclick="selectPayMethod(this, 'STC_PAY')">
-            <span>🟣</span> <span>STC Pay</span>
-          </div>
-          <div class="pay-method-card" onclick="selectPayMethod(this, 'VISA')">
-            <span>💳</span> <span>Visa / Mastercard</span>
-          </div>
+        <label style="font-size: 13px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px; display: block;" id="paymentMethodsLabel">
+          اختر وسيلة الدفع المحلية:
+        </label>
+        <div class="pay-methods-grid" id="checkoutPaymentMethodsGrid">
+          <!-- Dynamically populated based on active country -->
         </div>
 
         <button onclick="confirmPurchase()" class="btn-gold" style="width: 100%; padding: 14px; font-size: 18px;">
-          تأكيد السداد وإصدار فاتورة ZATCA
+          تأكيد السداد وتفعيل الترخيص الفوري
         </button>
 
         <div id="receiptResult" style="display: none; margin-top: 20px; background: rgba(13,100,33,0.3); border: 1px solid var(--green-bright); border-radius: 12px; padding: 16px; text-align: center;">
-          <div style="color: #62E46D; font-weight: bold; font-size: 16px; margin-bottom: 6px;">✅ تم السداد بنجاح وإصدار رخصة الاستخدام!</div>
+          <div style="color: #62E46D; font-weight: bold; font-size: 16px; margin-bottom: 6px;">✅ تم السداد بنجاح وإصدار ترخيص الاستخدام الرسمي!</div>
           <div id="receiptCode" style="font-family: monospace; color: var(--gold-light); font-size: 14px;">-</div>
         </div>
       </div>
@@ -1060,19 +1449,196 @@
     <div class="toast-msg" id="toastMsg">تم نسخ رابط المهارة بنجاح!</div>
 
     <footer>
-      <p>© 2026 سبق | Sabaq — جميع الحقوق محفوظة لمنصة وكلاء الذكاء الاصطناعي (gosabaq.com)</p>
-      <p style="margin-top: 6px; font-size: 12px; color: var(--text-muted);">بوابة معتمدة للأنظمة السعودية ولوائح وزارة التجارة وهيئة الزكاة والضريبة والجمارك</p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px;">
+        <div style="width: 28px; height: 28px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold-primary);">
+          <img src="/assets/aistudio/2026-10-12____-logo_043545a9.png" alt="شعار سبق" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <span style="font-family: 'Aref Ruqaa', serif; color: var(--gold-primary); font-size: 18px;">سبق | gosabaq.com</span>
+      </div>
+      <p>© 2026 سبق — المنصة العربية الرائدة لمهارات وكلاء الذكاء الاصطناعي موجهة لكل العرب ومصر 🇪🇬</p>
+      <p style="margin-top: 6px; font-size: 12px; color: var(--text-muted);">بوابات دفع مؤمنة بالكامل ومتوافقة مع المعايير المصرفية في مصر، السعودية، والإمارات والمنطقة العربية</p>
     </footer>
   </div>
 
-  <!-- JAVASCRIPT: DATA, SORTING, FILTERING, SANDBOX & CHECKOUT -->
+  <!-- JAVASCRIPT: DATA, CURRENCIES, 3D TILT & CONTROLS -->
   <script>
-    // Database of featured skills matching the Sabaq platform
+    const countriesData = {
+      EG: {
+        code: "EG",
+        nameAr: "مصر",
+        flag: "🇪🇬",
+        currencyCode: "EGP",
+        symbolAr: "ج.م",
+        rateFromSar: 13.08,
+        methods: [
+          { id: "INSTAPAY", name: "إنستاباي (InstaPay)", icon: "⚡" },
+          { id: "VODAFONE_CASH", name: "فودافون كاش ومحافظ المحمول", icon: "📱" },
+          { id: "FAWRY", name: "فوري (Fawry Pay)", icon: "🟡" },
+          { id: "MEEZA", name: "بطاقات ميزة (Meeza)", icon: "💳" },
+          { id: "VISA", name: "Visa / Mastercard", icon: "🌐" }
+        ]
+      },
+      SA: {
+        code: "SA",
+        nameAr: "السعودية",
+        flag: "🇸🇦",
+        currencyCode: "SAR",
+        symbolAr: "ر.س",
+        rateFromSar: 1.0,
+        methods: [
+          { id: "MADA", name: "مدى (Mada)", icon: "🟢" },
+          { id: "APPLE_PAY", name: "Apple Pay", icon: "🍏" },
+          { id: "STC_PAY", name: "STC Pay", icon: "🟣" },
+          { id: "VISA", name: "Visa / Mastercard", icon: "💳" }
+        ]
+      },
+      AE: {
+        code: "AE",
+        nameAr: "الإمارات",
+        flag: "🇦🇪",
+        currencyCode: "AED",
+        symbolAr: "د.إ",
+        rateFromSar: 0.98,
+        methods: [
+          { id: "APPLE_PAY", name: "Apple Pay", icon: "🍏" },
+          { id: "CAREEM_PAY", name: "Careem Pay", icon: "🟢" },
+          { id: "VISA", name: "بطاقات ائتمان بنكية", icon: "💳" }
+        ]
+      },
+      KW: {
+        code: "KW",
+        nameAr: "الكويت",
+        flag: "🇰🇼",
+        currencyCode: "KWD",
+        symbolAr: "د.ك",
+        rateFromSar: 0.082,
+        methods: [
+          { id: "KNET", name: "كي نت (K-Net)", icon: "🇰🇼" },
+          { id: "APPLE_PAY", name: "Apple Pay", icon: "🍏" },
+          { id: "VISA", name: "Visa / Mastercard", icon: "💳" }
+        ]
+      },
+      QA: {
+        code: "QA",
+        nameAr: "قطر",
+        flag: "🇶🇦",
+        currencyCode: "QAR",
+        symbolAr: "ر.ق",
+        rateFromSar: 0.97,
+        methods: [
+          { id: "QPAY", name: "بوابة QPay", icon: "🇶🇦" },
+          { id: "APPLE_PAY", name: "Apple Pay", icon: "🍏" },
+          { id: "VISA", name: "بطاقات بنكية", icon: "💳" }
+        ]
+      },
+      JO: {
+        code: "JO",
+        nameAr: "الأردن",
+        flag: "🇯🇴",
+        currencyCode: "JOD",
+        symbolAr: "د.أ",
+        rateFromSar: 0.19,
+        methods: [
+          { id: "CLIQ", name: "كليك (CliQ)", icon: "⚡" },
+          { id: "ZAIN_CASH", name: "زين كاش", icon: "📱" },
+          { id: "VISA", name: "Visa / Mastercard", icon: "💳" }
+        ]
+      },
+      MA: {
+        code: "MA",
+        nameAr: "المغرب",
+        flag: "🇲🇦",
+        currencyCode: "MAD",
+        symbolAr: "د.م",
+        rateFromSar: 2.68,
+        methods: [
+          { id: "CMI", name: "مركز النقديات CMI", icon: "🇲🇦" },
+          { id: "VISA", name: "Visa / Mastercard", icon: "💳" }
+        ]
+      },
+      DZ: {
+        code: "DZ",
+        nameAr: "الجزائر",
+        flag: "🇩🇿",
+        currencyCode: "DZD",
+        symbolAr: "د.ج",
+        rateFromSar: 35.8,
+        methods: [
+          { id: "BARIDIMOB", name: "بريدي موب (BaridiMob)", icon: "📱" },
+          { id: "EDAHABIA", name: "البطاقة الذهبية", icon: "💳" }
+        ]
+      },
+      TN: {
+        code: "TN",
+        nameAr: "تونس",
+        flag: "🇹🇳",
+        currencyCode: "TND",
+        symbolAr: "د.ت",
+        rateFromSar: 0.83,
+        methods: [
+          { id: "SOBFLOUS", name: "Sobflous ومحفظة الدينار", icon: "📱" },
+          { id: "VISA", name: "بطاقات بنكية", icon: "💳" }
+        ]
+      },
+      OM: {
+        code: "OM",
+        nameAr: "عُمان",
+        flag: "🇴🇲",
+        currencyCode: "OMR",
+        symbolAr: "ر.ع",
+        rateFromSar: 0.103,
+        methods: [
+          { id: "OMANNET", name: "شبكة عُمان نت", icon: "🇴🇲" },
+          { id: "VISA", name: "Visa / Mastercard", icon: "💳" }
+        ]
+      },
+      BH: {
+        code: "BH",
+        nameAr: "البحرين",
+        flag: "🇧🇭",
+        currencyCode: "BHD",
+        symbolAr: "د.ب",
+        rateFromSar: 0.101,
+        methods: [
+          { id: "BENEFIT", name: "بنفت بي (BenefitPay)", icon: "🇧🇭" },
+          { id: "VISA", name: "Visa / Mastercard", icon: "💳" }
+        ]
+      },
+      IQ: {
+        code: "IQ",
+        nameAr: "العراق",
+        flag: "🇮🇶",
+        currencyCode: "IQD",
+        symbolAr: "د.ع",
+        rateFromSar: 350.0,
+        methods: [
+          { id: "ZAIN_IQ", name: "زين كاش العراق", icon: "📱" },
+          { id: "QICARD", name: "كي كارد (Qi Card)", icon: "💳" }
+        ]
+      },
+      GLOBAL: {
+        code: "GLOBAL",
+        nameAr: "دولي",
+        flag: "🌐",
+        currencyCode: "USD",
+        symbolAr: "$",
+        rateFromSar: 0.27,
+        methods: [
+          { id: "STRIPE", name: "Stripe Global", icon: "💳" },
+          { id: "PAYPAL", name: "PayPal", icon: "🅿️" },
+          { id: "APPLE_PAY", name: "Apple Pay", icon: "🍏" }
+        ]
+      }
+    };
+
+    let activeCountry = countriesData.EG;
+    let is3DModeActive = true;
+
     const skillsData = [
       {
         id: "skill-legal-sa",
-        title: "مستشار العقود والامتثال التجاري السعودي",
-        titleEn: "Saudi Legal & Commercial Contracts Advisor",
+        title: "مستشار العقود والامتثال التجاري والمدني",
+        titleEn: "Arab & Gulf Commercial Legal Contracts Advisor",
         category: "Legal",
         categoryLabel: "قانون وامتثال",
         icon: "⚖️",
@@ -1084,28 +1650,21 @@
         priceType: "SUBSCRIPTION",
         priceSar: 199.0,
         createdAt: "2026-10-15",
-        description: "مهارة ذكاء اصطناعي تصيغ العقود التجارية وتتحقق من مطابقتها لنظام المعاملات المدنية ونظام العمل السعودي مع تنبيهات استباقية بالثغرات القانونية.",
+        description: "مهارة ذكاء اصطناعي تصيغ العقود التجارية وتتحقق من مطابقتها لنظام المعاملات المدنية والقانون المصري والتجاري العربي مع تنبيهات استباقية بالثغرات.",
         tools: ["DOCUMENT_PARSER", "LEGAL_CODE_SEARCH", "CLAUSE_VALIDATOR"],
-        slug: "saudi-legal-advisor-v2",
+        slug: "arab-legal-advisor-v2",
         isFeatured: true,
         samplePrompts: [
           "صياغة عقد تقديم خدمات برمجية وحفظ حقوق الملكية الفكرية",
           "فحص شرط عدم المنافسة في عقد عمل لموظف تقني",
-          "التأكد من التوافق مع نظام المعاملات المدنية الجديد"
+          "التأكد من التوافق مع الأنظمة التجارية المعاصرة"
         ],
-        mockResponse: (input) => `📄 تقرير التدقيق القانوني لوكيل سبق (gosabaq.com):
-• الإدخال المعالج: "${input}"
-• المطابقة النظامية: 100% متوافق مع نظام المعاملات المدنية السعودي ونظام العمل.
-• البنود المستنتجة:
-  1. نطاق العمل: محدد بوضوح مع مراحل تسليم مجدولة.
-  2. الشروط الجزائية: لا تتجاوز الحدود المقبولة قضاءً.
-  3. التحكيم التجاري: تمت إضافة شرط الإحالة إلى المركز السعودي للتحكيم التجاري (SCCA).
-• ترخيص الاستخدام: مفعل ومعتمد لمنصة سبق.`
+        mockResponse: (input) => `📄 تقرير التدقيق القانوني لوكيل سبق (gosabaq.com):\n• الإدخال المعالج: "${input}"\n• المطابقة النظامية: 100% متوافق مع الأنظمة واللوائح المعتمدة.\n• البنود المستنتجة:\n  1. نطاق العمل: محدد بوضوح مع مراحل تسليم مجدولة.\n  2. الشروط الجزائية: مقيدة بالضوابط المقبولة قضاءً.\n  3. التحكيم التجاري: تم تضمين آلية فض النزاعات المعتمدة.\n• ترخيص الاستخدام: مفعل ومعتمد لمنصة سبق.`
       },
       {
         id: "skill-ecom-support",
-        title: "أتمتة خدمة عملاء متجر سلة وزد 24/7",
-        titleEn: "Salla & Zid 24/7 Support & Sales Agent",
+        title: "أتمتة خدمة عملاء المتاجر الإلكترونية 24/7",
+        titleEn: "E-Commerce 24/7 Support & Sales Agent",
         category: "CustomerSupport",
         categoryLabel: "خدمة العملاء والمبيعات",
         icon: "🛍️",
@@ -1117,27 +1676,21 @@
         priceType: "PAID",
         priceSar: 89.0,
         createdAt: "2026-09-20",
-        description: "تتصل المهارة بـ API متجرك للرد اللحظي عبر واتساب على تتبع الشحنات، الاسترجاع، وتوصيات البيع الإضافي بلهجة سعودية ودية.",
+        description: "تتصل المهارة بمتجرك للرد اللحظي عبر واتساب على تتبع الشحنات، الاسترجاع، وتوصيات البيع الإضافي بلهجة ودية متقنة.",
         tools: ["ORDER_TRACKER_API", "WHATSAPP_CONNECTOR", "INVENTORY_LOOKUP"],
-        slug: "ecom-saudi-support-bot",
+        slug: "ecom-support-bot",
         isFeatured: true,
         samplePrompts: [
-          "تتبع شحنة رقم #SA-9821 المتجهة للدمام",
+          "تتبع شحنة رقم #EG-9821 المتجهة للإسكندرية / القاهرة",
           "هل مقاس L متوفر من الحذاء الرياضي وما وقت التوصيل؟",
           "سياسة استبدال منتج وصل تالفاً"
         ],
-        mockResponse: (input) => `💬 استجابة وكيل خدمة العملاء الذكي (Sabaq Omnichannel):
-"أهلاً وسهلاً بك! بخصوص استفسارك: '${input}'
-تم فحص نظام المستودع وربط الشحنات لحظياً:
-• حالة الطلب: جاهز للتسليم في الرياض عبر ناقل أرامكس / سمسا.
-• موعد الوصول المتوقع: خلال 24 ساعة بإذن الله.
-• كود تتبع الشحنة: SA-992384-KSA
-هل تود المساعدة في أي استفسار آخر؟ سعداء بخدمتك دائماً!"`
+        mockResponse: (input) => `💬 استجابة وكيل خدمة العملاء الذكي (Sabaq Omnichannel):\n"أهلاً وسهلاً بك! بخصوص استفسارك: '${input}'\nتم فحص نظام المستودع وربط الشحنات لحظياً:\n• حالة الطلب: جاهز للشحن والتسليم عبر شركة الشحن المعتمدة.\n• موعد الوصول المتوقع: خلال 24-48 ساعة بإذن الله.\n• كود التتبع: TRK-883921\nهل تود المساعدة في أي استفسار آخر؟ سعداء بخدمتك دائماً!"`
       },
       {
         id: "skill-fin-vat",
-        title: "مدقق ضريبة القيمة المضافة والفواتير ZATCA",
-        titleEn: "ZATCA e-Invoicing & VAT Auditor Pro",
+        title: "مدقق الفواتير الإلكترونية والضرائب ZATCA & ETA",
+        titleEn: "Electronic Invoicing & Tax Auditor Pro",
         category: "Finance",
         categoryLabel: "المالية والضرائب",
         icon: "🧾",
@@ -1148,288 +1701,360 @@
         benchmark: 99,
         priceType: "PAID",
         priceSar: 149.0,
-        createdAt: "2026-10-28",
-        description: "فحص الفواتير الإلكترونية (المرحلة الثانية) ومطابقة الرمز المشفر QR، وحساب ضريبة القيمة المضافة 15% بدقة محاسبية معتمدة.",
-        tools: ["QR_DECODER", "VAT_CALCULATOR", "XML_ZATCA_PARSER"],
-        slug: "zatca-vat-auditor-pro",
+        createdAt: "2026-10-02",
+        description: "تدقيق هياكل الفواتير الإلكترونية، والتحقق من حسابات الضريبة، وتوافق صيغ XML/JSON مع المعايير الضريبية وتوليد الأكواد المشفرة.",
+        tools: ["XML_VALIDATOR", "TAX_CALCULATOR", "QR_CRYPTO_SIGNER"],
+        slug: "e-invoicing-tax-auditor",
         isFeatured: true,
         samplePrompts: [
-          "فحص فاتورة مبيعات بقيمة 50,000 ر.س والتحقق من حساب الضريبة 15%",
-          "التحقق من كود الـ QR المشفر لشهادة التشفير Cryptographic Stamp",
-          "إعداد ملخص الإقرار الضريبي ربع السنوي"
+          "التحقق من صحة تشفير رمز الاستجابة السريعة (QR) للفاتورة",
+          "فحص بنود ضريبة القيمة المضافة لسلعة معفاة",
+          "مطابقة ملف فاتورة XML مع المخطط الرسمي"
         ],
-        mockResponse: (input) => `📊 تقرير الفحص الضريبي لهيئة الزكاة والضريبة (ZATCA Phase 2):
-• الإدخال: "${input}"
-• ضريبة القيمة المضافة المحتسبة: 15.00% نظامية.
-• حالة الفاتورة الإلكترونية: متوافقة 100% مع مواصفات الفوترة الإلكترونية.
-• التوقيع المشفر: Validated cryptographic stamp SHA-256
-• الكود المرجعي للعملية: SBQ-VAT-${Math.floor(100000 + Math.random() * 900000)}`
+        mockResponse: (input) => `📊 تقرير الفحص والتدقيق الضريبي:\n• الملف المفحوص: ${input}\n• حالة التدقيق: مطابق 100% للمعايير الضريبية.\n• التشفير الرقمي: التوقيع الإلكتروني سليم وصالح.\n• ملخص الضريبة: تم احتساب النسبة بدقة متناهية.`
       },
       {
-        id: "skill-financial-cfo",
-        title: "وكيل المدير المالي واستشراف التدفق النقدي",
-        titleEn: "Virtual CFO & Cashflow Predictive Engine",
-        category: "Finance",
-        categoryLabel: "المالية والضرائب",
-        icon: "📈",
-        developer: "حلول مسار المالية",
-        rating: 4.92,
-        reviewsCount: 76,
-        executions: 6700,
-        benchmark: 97,
-        priceType: "PAID",
-        priceSar: 249.0,
-        createdAt: "2026-10-05",
-        description: "تحليل القوائم المالية، هوامش الربح التشغيلي، ومحاكاة السيناريوهات الاقتصادية والتدفقات النقدية المستقبلية مع تقارير لوحة القيادة.",
-        tools: ["PYTHON_PANDAS", "CASHFLOW_SIM", "EXECUTIVE_PDF"],
-        slug: "virtual-cfo-agent-sa",
-        isFeatured: true,
-        samplePrompts: [
-          "تحليل هامش الربح التشغيلي مقارنة بمتوسط قطاع التقنية المالية",
-          "توقع التدفق النقدي للأشهر الستة القادمة مع زيادة التوظيف 20%",
-          "تقييم كفاءة رأس المال العامل ودورة التحول النقدي"
-        ],
-        mockResponse: (input) => `📈 تقرير المدير المالي التنفيذي (Virtual CFO Insight):
-• استفسار التحليل: "${input}"
-• نتيجة محاكاة التدفقات النقدية:
-  - هامش الأرباح التشغيلية: 22.4% (أعلى من مؤشر السوق بـ 3.8%).
-  - مدرج السيولة النقدية (Cash Runway): كافٍ لـ 14 شهراً بناءً على معدل الحرق الحالي.
-  - التوصية الاستراتيجية: إعادة استثمار 15% من الفائض النقدي في توسيع قنوات التسويق ذات العائد الإيجابي.`
-      },
-      {
-        id: "skill-code-reviewer",
-        title: "وكيل هندسة البرمجيات وفحص الثغرات الأمنية",
-        titleEn: "Autonomous Code Auditor & Security Agent",
+        id: "skill-dev-audit",
+        title: "فاحص أمان الكود واختراق العقود الذكية",
+        titleEn: "Code Security & Smart Contracts Auditor",
         category: "Development",
-        categoryLabel: "البرمجة والأمن السيبراني",
+        categoryLabel: "البرمجة والأمان",
         icon: "🛡️",
-        developer: "مختبر كود سيكيور",
+        developer: "مختبر الحصن السيبراني",
         rating: 4.88,
         reviewsCount: 140,
-        executions: 21000,
-        benchmark: 96,
-        priceType: "PAID",
-        priceSar: 179.0,
-        createdAt: "2026-09-12",
-        description: "فحص الشيفرات البرمجية واكتشاف ثغرات OWASP واقتراح التحسينات والتوليد الآلي لاختبارات التحقق والأمان العالي.",
-        tools: ["STATIC_ANALYZER", "AST_PARSER", "UNIT_TEST_GEN"],
-        slug: "code-security-auditor-sa",
+        executions: 29500,
+        benchmark: 97,
+        priceType: "SUBSCRIPTION",
+        priceSar: 249.0,
+        createdAt: "2026-08-11",
+        description: "فحص شيفرات Python, Kotlin, TypeScript وكشف الثغرات الأمنية مثل SQL Injection وتسريب مفاتيح API مع تقديم حلول ترقيع جاهزة.",
+        tools: ["STATIC_ANALYZER", "CVE_DATABASE", "PATCH_GENERATOR"],
+        slug: "cyber-code-auditor",
         isFeatured: false,
         samplePrompts: [
-          "فحص كود استعلام SQL للتأكد من منع ثغرات الحقن SQL Injection",
-          "مراجعة إعدادات تشفير كلمات المرور والتوكنز في تطبيق Kotlin",
-          "توليد اختبارات وحدوية Unit Tests لمكونات الدفع"
+          "فحص كود استعلام SQL للتأكد من منع هجمات الحقن",
+          "تحليل أمان استدعاءات API في تطبيق أندرويد",
+          "كشف تسريب بيانات حساسة في ملفات الإعدادات"
         ],
-        mockResponse: (input) => `🛡️ تقرير الفحص الأمني للشيفرة (Sabaq Security Auditor):
-• المدخلات: "${input}"
-• مؤشر الأمان العام: 98/100 (لا توجد ثغرات حرجة).
-• المعالجة المنفذة:
-  - تم التحقق من سلامة استدعاءات قواعد البيانات واستخدام Parameterized Queries.
-  - تم إنشاء اختبار أمان وحدوي للتأكد من تعقيم المدخلات.
-  - توصية: تفعيل معايير التشفير AES-256-GCM للبيانات الحساسة.`
+        mockResponse: (input) => `🛡️ تقرير الفحص الأمني لوكيل سبق:\n• التحليل الأمني: تم فحص الكود بالكامل مقابل قاعدة بيانات الثغرات CVE.\n• النتيجة: الكود سليم وخالي من الثغرات الحرجة.\n• التوصية: تم تفعيل تشفير الاتصال وحماية المتغيرات البيئية بنجاح.`
       },
       {
-        id: "skill-seo-arabic",
-        title: "وكيل صناعة المحتوى وSEO للأسواق الخليجية",
-        titleEn: "Arabic Gulf SEO & Copywriting Engine",
+        id: "skill-mkt-seo",
+        title: "مبتكر الحملات التسويقية ومحسن الـ SEO العربي",
+        titleEn: "Arabic SEO & Social Ad Campaign Creator",
         category: "Marketing",
-        categoryLabel: "التسويق والمحتوى",
-        icon: "✍️",
-        developer: "بصمة ديجيتال",
+        categoryLabel: "التسويق وSEO",
+        icon: "📈",
+        developer: "وكالة أثر التسويقية",
         rating: 4.75,
-        reviewsCount: 205,
-        executions: 34500,
+        reviewsCount: 220,
+        executions: 62000,
         benchmark: 94,
-        priceType: "PAID",
-        priceSar: 99.0,
-        createdAt: "2026-08-30",
-        description: "وكيل ذكي يولد مقالات متصدرة في Google وإعلانات مخصصة للمستهلك الخليجي مع تضمين أكثر الكلمات بحثاً وترتيباً.",
-        tools: ["KEYWORD_ANALYZER", "SERPER_WEB_SEARCH", "COPY_GEN"],
-        slug: "arabic-seo-agent-gulf",
+        priceType: "FREE",
+        priceSar: 0.0,
+        createdAt: "2026-07-28",
+        description: "توليد نصوص إعلانات جذابة لمنصات تيك توك، سناب شات، وإكس مع اقتراح كلمات مفتاحية تتصدر محرك بحث جوجل في مصر والخليج.",
+        tools: ["KEYWORD_PLANNER", "HOOK_GENERATOR", "TREND_ANALYZER"],
+        slug: "arabic-seo-marketer",
         isFeatured: false,
         samplePrompts: [
-          "كتابة مقال متوافق مع معايير السيو عن حلول التجارة الإلكترونية في السعودية",
-          "صياغة 5 إعلانات سناب شات وتيك توك جذابة لمنتج عطور",
-          "استخراج الكلمات المفتاحية ذات المنافسة المنخفضة والبحث العالي"
+          "كتابة نص إعلان سناب شات لتطبيق توصيل قهوة",
+          "خطة كلمات مفتاحية لمتجر ملابس إلكتروني",
+          "صياغة 5 خطافات (Hooks) لمقاطع تيك توك فيروسية"
         ],
-        mockResponse: (input) => `✍️ مخرجات محرك صناعة المحتوى وSEO الخليجي:
-• الموضوع: "${input}"
-• هيكل المقال المنشأ:
-  - عنوان المقال الرئيسي (H1): مدعوم بالكلمات الأكثر رواجاً في محركات البحث السعودية.
-  - العناوين الفرعية (H2, H3): تشمل إجابات للأسئلة الشائعة في جوجل (People Also Ask).
-  - كثافة الكلمة المفتاحية: 1.8% مثالية دون حشو زائد.
-  - الميتا ديسكريبشن: 155 حرفاً مشجعاً على النقر (CTR مرتفع).`
+        mockResponse: (input) => `🎯 خطة الحملة الإعلانية والنصوص التسويقية:\n• الهدف: تحسين معدل التحويل وجذب الجمهور المستهدف.\n• النصوص المقترحة:\n  1. الخطاف: "تبحث عن السرعة والدقة في عملك؟ الحل أسرع مما تتخيل!"\n  2. نص الدعوة لاتخاذ إجراء (CTA): جرّب الآن مجاناً ووفّر وقتك.\n• الكلمات المفتاحية: ذكاء اصطناعي، أتمتة، نمو الأعمال، حلول ذكية.`
+      },
+      {
+        id: "skill-hr-interviewer",
+        title: "مسؤول المقابلات الوظيفية وتقييم الكفاءات",
+        titleEn: "AI HR Technical Interviewer & Talent Assessor",
+        category: "CustomerSupport",
+        categoryLabel: "الموارد البشرية والتوظيف",
+        icon: "👥",
+        developer: "مؤسسة تمكين الموارد",
+        rating: 4.82,
+        reviewsCount: 165,
+        executions: 41000,
+        benchmark: 95,
+        priceType: "PAID",
+        priceSar: 119.0,
+        createdAt: "2026-09-05",
+        description: "إجراء مقابلات أولية مع المرشحين، فحص السير الذاتية، وتقييم الجدارات السلوكية والتقنية مع إعداد تقرير حيادي لمدير التوظيف.",
+        tools: ["RESUME_PARSER", "CRITERIA_SCORER", "INTERVIEW_SIMULATOR"],
+        slug: "ai-hr-interviewer-pro",
+        isFeatured: false,
+        samplePrompts: [
+          "تقييم سيرة ذاتية لمهندس برمجيات أول",
+          "صياغة أسئلة مقابلة جدارات لمدير مشروع",
+          "اختبار مرشح في مهارات حل المشكلات تحت الضغط"
+        ],
+        mockResponse: (input) => `📋 تقرير تقييم المرشح المهني:\n• المعايير المفحوصة: ${input}\n• التوافق مع الوصف الوظيفي: 92%\n• أبرز نقاط القوة: خبرة ممتازة، مهارات تواصل قوية.\n• التوصية النهائية: ترشيح للمقابلة الفنية النهائية.`
       }
     ];
 
     let currentCategory = "ALL";
-    let activeSkillForSandbox = null;
-    let activeSkillForCheckout = null;
+    let activeSkillForSandbox = skillsData[0];
+    let activeSkillForCheckout = skillsData[0];
 
-    // Render cards
+    function formatPrice(amountSar) {
+      if (amountSar === 0) return "مجاني (Free)";
+      const converted = amountSar * activeCountry.rateFromSar;
+      const formatted = converted.toLocaleString('ar-EG', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 2
+      });
+      return `${formatted} ${activeCountry.symbolAr}`;
+    }
+
+    function onCountryChanged(code) {
+      activeCountry = countriesData[code] || countriesData.EG;
+      document.getElementById("activeFlagIcon").textContent = activeCountry.flag;
+      
+      const heroBadge = document.getElementById("heroCountryBadge");
+      if (heroBadge) {
+        if (code === "EG") {
+          heroBadge.innerHTML = `<span>🇪🇬 العملة: الجنيه المصري (${activeCountry.symbolAr}) — إنستاباي وفودافون كاش متاح</span>`;
+        } else {
+          heroBadge.innerHTML = `<span>${activeCountry.flag} العملة: ${activeCountry.nameAr} (${activeCountry.symbolAr})</span>`;
+        }
+      }
+
+      const heroStat = document.getElementById("heroPayMethodsStat");
+      if (heroStat) {
+        heroStat.textContent = activeCountry.methods.slice(0, 2).map(m => m.name.split(" ")[0]).join(" & ");
+      }
+
+      applyFiltersAndSort();
+
+      if (document.getElementById("checkoutModal").classList.contains("active")) {
+        openCheckout(activeSkillForCheckout.id);
+      }
+
+      showToast(`تم تغيير الدولة إلى: ${activeCountry.flag} ${activeCountry.nameAr} (${activeCountry.symbolAr})`);
+    }
+
+    function toggle3DMode() {
+      is3DModeActive = !is3DModeActive;
+      const btn = document.getElementById("toggle3dBtn");
+      if (is3DModeActive) {
+        btn.classList.add("active");
+        btn.innerHTML = `<span>🎮</span> <span>عرض 3D: مفعّل</span>`;
+        showToast("✨ تم تفعيل العرض المجسم ثلاثي الأبعاد 3D");
+      } else {
+        btn.classList.remove("active");
+        btn.innerHTML = `<span>🎮</span> <span>عرض 3D: معطّل</span>`;
+        resetAllCardTilts();
+        showToast("تم تعطيل العرض ثلاثي الأبعاد");
+      }
+    }
+
+    function resetAllCardTilts() {
+      document.querySelectorAll(".skill-card").forEach(c => {
+        c.style.transform = "none";
+      });
+      const heroCard = document.getElementById("heroCard");
+      if (heroCard) heroCard.style.transform = "none";
+    }
+
     function renderSkills(skills) {
       const grid = document.getElementById("skillsGrid");
-      grid.innerHTML = "";
+      const countEl = document.getElementById("skillsCount");
+      countEl.textContent = `عرض ${skills.length} من المهارات المعتمدة`;
 
       if (skills.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
-          لا توجد مهارات مطابقة للتصنيف المختار حالياً.
-        </div>`;
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--green-card); border-radius: 20px; border: 1px dashed var(--border-subtle);">
+            <div style="font-size: 40px; margin-bottom: 12px;">🔍</div>
+            <h3 style="font-family: 'Aref Ruqaa', serif; color: var(--gold-primary); font-size: 22px;">لم يتم العثور على مهارات مطابقة</h3>
+            <p style="color: var(--text-secondary); margin-top: 6px;">جرب تغيير التصنيف أو خيارات الفرز في الأعلى.</p>
+          </div>
+        `;
         return;
       }
 
-      skills.forEach(skill => {
-        const card = document.createElement("div");
-        card.className = "skill-card";
-
-        const featuredBadge = skill.isFeatured
-          ? `<div class="skill-card-featured-badge">⭐ مميز</div>`
+      grid.innerHTML = skills.map(skill => {
+        const priceLabel = formatPrice(skill.priceSar);
+        const sarNotice = (activeCountry.code !== "SA" && skill.priceSar > 0)
+          ? `<span class="price-converted-sub">(يعادل ${skill.priceSar} ر.س)</span>`
           : "";
 
-        const toolsHtml = skill.tools.map(t => `<span class="tool-badge">${t}</span>`).join("");
+        return `
+          <div class="skill-card-3d-wrap">
+            <div class="skill-card" data-skill-id="${skill.id}">
+              <div class="card-glare"></div>
+              ${skill.isFeatured ? `
+                <div class="skill-card-featured-badge">
+                  <span>★</span>
+                  <span>مميزة</span>
+                </div>
+              ` : ''}
 
-        const priceDisplay = skill.priceType === "SUBSCRIPTION"
-          ? `<span class="price-amount">${skill.priceSar} ر.س</span><span class="price-label">أو مشمول باشتراك Pro</span>`
-          : `<span class="price-amount">${skill.priceSar} ر.س</span><span class="price-label">شراء لمرة واحدة</span>`;
+              <div class="skill-card-top">
+                <div class="skill-icon-box">${skill.icon}</div>
+                <div class="skill-title-meta">
+                  <h3 class="skill-card-title">${skill.title}</h3>
+                  <div class="skill-creator">
+                    <span>${skill.developer}</span>
+                    <span>•</span>
+                    <span style="color: #7BE785;">${skill.categoryLabel}</span>
+                  </div>
+                </div>
+              </div>
 
-        card.innerHTML = `
-          ${featuredBadge}
-          <div class="skill-card-top">
-            <div class="skill-icon-box">${skill.icon}</div>
-            <div class="skill-title-meta">
-              <h3 class="skill-card-title">${skill.title}</h3>
-              <div class="skill-creator">
-                المطور: <span>${skill.developer}</span>
+              <p class="skill-description">${skill.description}</p>
+
+              <div class="tools-wrap">
+                ${skill.tools.map(tool => `<span class="tool-badge">⚙️ ${tool}</span>`).join('')}
+              </div>
+
+              <div class="metrics-bar">
+                <div class="metric-group">
+                  <span class="metric-val gold">⭐ ${skill.rating}</span>
+                  <span class="metric-label">${skill.reviewsCount} تقييم</span>
+                </div>
+                <div class="metric-group">
+                  <span class="metric-val">🔥 ${skill.executions.toLocaleString('ar-EG')}</span>
+                  <span class="metric-label">استدعاء ناجح</span>
+                </div>
+                <div class="metric-group">
+                  <span class="metric-val gold">🎯 ${skill.benchmark}%</span>
+                  <span class="metric-label">دقة الاستدلال</span>
+                </div>
+              </div>
+
+              <div class="skill-card-footer">
+                <div class="price-box">
+                  <span class="price-label">تكلفة الاستخدام:</span>
+                  <span class="price-amount">${priceLabel}</span>
+                  ${sarNotice}
+                </div>
+                <div class="card-actions-group">
+                  <button onclick="openSandbox('${skill.id}')" class="btn-outline btn-sm" title="اختبار المهارة في المختبر">
+                    ⚡ تجربة
+                  </button>
+                  <button onclick="openCheckout('${skill.id}')" class="btn-gold btn-sm" title="شراء واستخدام المهارة">
+                    🛒 ${skill.priceSar === 0 ? 'تشغيل' : 'شراء'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-
-          <p class="skill-description">${skill.description}</p>
-
-          <div class="tools-wrap">
-            ${toolsHtml}
-          </div>
-
-          <div class="skill-metrics">
-            <div class="metric-col">
-              <span class="metric-val gold">⭐ ${skill.rating}</span>
-              <span class="metric-label">(${skill.reviewsCount} تقييم)</span>
-            </div>
-            <div class="metric-col">
-              <span class="metric-val">${skill.executions.toLocaleString()}</span>
-              <span class="metric-label">تشغيل</span>
-            </div>
-            <div class="metric-col">
-              <span class="metric-val gold">${skill.benchmark}%</span>
-              <span class="metric-label">نسبة الدقة</span>
-            </div>
-          </div>
-
-          <div class="skill-card-footer">
-            <div class="price-box">
-              ${priceDisplay}
-            </div>
-
-            <div class="card-actions-group">
-              <button onclick="openSandbox('${skill.id}')" class="btn-outline btn-sm" title="تجربة فورية في المختبر">
-                ⚡ تجربة
-              </button>
-              <button onclick="openCheckout('${skill.id}')" class="btn-gold btn-sm" title="شراء المهارة">
-                🛒 شراء
-              </button>
-              <button onclick="copySkillLink('${skill.slug}')" class="btn-outline btn-sm" style="padding: 7px 10px;" title="نسخ رابط المشاركة">
-                🔗
-              </button>
-            </div>
-          </div>
         `;
-        grid.appendChild(card);
-      });
+      }).join('');
 
-      document.getElementById("skillsCount").textContent = `عرض ${skills.length} مهارة معتمدة`;
+      attach3DTiltListeners();
     }
 
-    // Filter and Sort logic
+    function attach3DTiltListeners() {
+      const cards = document.querySelectorAll('.skill-card');
+
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          if (!is3DModeActive) return;
+
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+
+          const rotateX = ((y - centerY) / centerY) * -12;
+          const rotateY = ((x - centerX) / centerX) * 12;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+
+          const glare = card.querySelector('.card-glare');
+          if (glare) {
+            glare.style.background = `radial-gradient(circle at ${(x / rect.width) * 100}% ${(y / rect.height) * 100}%, rgba(255, 243, 120, 0.22) 0%, transparent 60%)`;
+          }
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+      });
+
+      const heroCard = document.getElementById('heroCard');
+      if (heroCard) {
+        heroCard.addEventListener('mousemove', (e) => {
+          if (!is3DModeActive) return;
+          const rect = heroCard.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -4;
+          const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 4;
+          heroCard.style.transform = `perspective(1200px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
+        });
+
+        heroCard.addEventListener('mouseleave', () => {
+          heroCard.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+        });
+      }
+    }
+
     function applyFiltersAndSort() {
       let filtered = [...skillsData];
 
-      // 1. Category Filter
       if (currentCategory !== "ALL") {
         filtered = filtered.filter(s => s.category === currentCategory);
       }
 
-      // 2. Sorting
-      const sortValue = document.getElementById("sortSelect").value;
-      if (sortValue === "popularity") {
-        filtered.sort((a, b) => b.executions - a.executions);
-      } else if (sortValue === "rating") {
-        filtered.sort((a, b) => b.rating - a.rating);
-      } else if (sortValue === "newest") {
-        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      } else if (sortValue === "price_asc") {
-        filtered.sort((a, b) => a.priceSar - b.priceSar);
-      } else if (sortValue === "benchmark") {
-        filtered.sort((a, b) => b.benchmark - a.benchmark);
+      const sortVal = document.getElementById("sortSelect").value;
+      switch (sortVal) {
+        case "popularity":
+          filtered.sort((a, b) => b.executions - a.executions);
+          break;
+        case "rating":
+          filtered.sort((a, b) => b.rating - a.rating);
+          break;
+        case "newest":
+          filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break;
+        case "price_asc":
+          filtered.sort((a, b) => a.priceSar - b.priceSar);
+          break;
+        case "benchmark":
+          filtered.sort((a, b) => b.benchmark - a.benchmark);
+          break;
       }
 
       renderSkills(filtered);
     }
 
-    // Category Buttons Event Listeners
-    document.querySelectorAll(".cat-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
+    document.getElementById("categoryFilters").addEventListener("click", (e) => {
+      if (e.target.classList.contains("cat-btn")) {
         document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentCategory = btn.dataset.cat;
+        e.target.classList.add("active");
+        currentCategory = e.target.getAttribute("data-cat");
         applyFiltersAndSort();
-      });
+      }
     });
 
-    // Copy Skill Link
-    function copySkillLink(slug) {
-      const url = `https://gosabaq.com/skills/${slug}`;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => {
-          showToast(`تم نسخ الرابط: ${url}`);
-        });
-      } else {
-        showToast(`تم نسخ الرابط: ${url}`);
-      }
-    }
-
-    function showToast(msg) {
+    function showToast(text) {
       const toast = document.getElementById("toastMsg");
-      toast.textContent = msg;
+      toast.textContent = text;
       toast.classList.add("show");
       setTimeout(() => {
         toast.classList.remove("show");
       }, 3000);
     }
 
-    // SANDBOX MODAL LOGIC
     function openSandbox(skillId) {
       const skill = skillsData.find(s => s.id === skillId) || skillsData[0];
       activeSkillForSandbox = skill;
 
-      document.getElementById("sandboxTitle").textContent = `⚡ مختبر تجربة: ${skill.title}`;
-      document.getElementById("sandboxSubtitle").textContent = `فئة: ${skill.categoryLabel} | دقة المهارة: ${skill.benchmark}% | المطور: ${skill.developer}`;
-
-      const promptsContainer = document.getElementById("sandboxPrompts");
-      promptsContainer.innerHTML = "";
-      skill.samplePrompts.forEach(p => {
-        const chip = document.createElement("div");
-        chip.className = "prompt-chip";
-        chip.textContent = p;
-        chip.onclick = () => {
-          document.getElementById("sandboxInput").value = p;
-        };
-        promptsContainer.appendChild(chip);
-      });
-
+      document.getElementById("sandboxTitle").innerHTML = `${skill.icon} مختبر: ${skill.title}`;
       document.getElementById("sandboxInput").value = skill.samplePrompts[0] || "";
-      document.getElementById("sandboxOutput").classList.remove("active");
-      document.getElementById("sandboxOutput").innerHTML = "";
-      document.getElementById("sandboxRunningMsg").style.display = "none";
+
+      const promptsWrap = document.getElementById("sandboxPrompts");
+      promptsWrap.innerHTML = skill.samplePrompts.map(p =>
+        `<div class="prompt-chip" onclick="document.getElementById('sandboxInput').value = '${p.replace(/'/g, "\\'")}'">💡 ${p}</div>`
+      ).join('');
+
+      const outputWrap = document.getElementById("sandboxOutput");
+      outputWrap.classList.remove("active");
+      outputWrap.innerHTML = "";
 
       document.getElementById("sandboxModal").classList.add("active");
     }
@@ -1441,7 +2066,7 @@
     function runSandboxTest() {
       const input = document.getElementById("sandboxInput").value.trim();
       if (!input) {
-        alert("يرجى كتابة مدخلات لتشغيل المهارة.");
+        showToast("يرجى إدخال نص لتشغيل الاختبار");
         return;
       }
 
@@ -1470,19 +2095,29 @@
       }, 1600);
     }
 
-    // CHECKOUT MODAL LOGIC
     function openCheckout(skillId) {
       const skill = skillsData.find(s => s.id === skillId) || skillsData[0];
       activeSkillForCheckout = skill;
 
       document.getElementById("checkoutItemName").textContent = skill.title;
-      const basePrice = skill.priceSar;
-      const vat = +(basePrice * 0.15).toFixed(2);
+      document.getElementById("cardCountryBadge").textContent = `${activeCountry.flag} ${activeCountry.nameAr}`;
+      document.getElementById("paymentMethodsLabel").textContent = `اختر وسيلة الدفع في ${activeCountry.nameAr}:`;
+
+      const basePrice = skill.priceSar * activeCountry.rateFromSar;
+      const vat = +(basePrice * 0.14).toFixed(2);
       const total = +(basePrice + vat).toFixed(2);
 
-      document.getElementById("checkoutBasePrice").textContent = `${basePrice.toFixed(2)} ر.س`;
-      document.getElementById("checkoutVat").textContent = `${vat.toFixed(2)} ر.س`;
-      document.getElementById("checkoutTotalPrice").textContent = `${total.toFixed(2)} ر.س`;
+      const symbol = activeCountry.symbolAr;
+      document.getElementById("checkoutBasePrice").textContent = `${basePrice.toFixed(2)} ${symbol}`;
+      document.getElementById("checkoutVat").textContent = `${vat.toFixed(2)} ${symbol}`;
+      document.getElementById("checkoutTotalPrice").textContent = `${total.toFixed(2)} ${symbol}`;
+
+      const payGrid = document.getElementById("checkoutPaymentMethodsGrid");
+      payGrid.innerHTML = activeCountry.methods.map((method, index) => `
+        <div class="pay-method-card ${index === 0 ? 'selected' : ''}" onclick="selectPayMethod(this, '${method.id}')">
+          <span>${method.icon}</span> <span>${method.name}</span>
+        </div>
+      `).join('');
 
       document.getElementById("receiptResult").style.display = "none";
       document.getElementById("checkoutModal").classList.add("active");
@@ -1498,20 +2133,18 @@
     }
 
     function confirmPurchase() {
-      const receiptNum = "SBQ-PAY-" + Math.floor(10000 + Math.random() * 90000);
-      document.getElementById("receiptCode").textContent = `رقم الإيصال المشفر: ${receiptNum} | التوقيت: ${new Date().toLocaleTimeString('ar-SA')}`;
+      const receiptNum = "SBQ-" + activeCountry.code + "-" + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById("receiptCode").textContent = `رقم الإيصال المشفر: ${receiptNum} | التوقيت: ${new Date().toLocaleTimeString('ar-EG')}`;
       document.getElementById("receiptResult").style.display = "block";
       showToast(`تم إتمام الشراء بنجاح! رقم الإيصال: ${receiptNum}`);
     }
 
-    // Close on outside click
     window.onclick = function(event) {
       if (event.target.classList.contains("modal-overlay")) {
         event.target.classList.remove("active");
       }
     };
 
-    // TOAST NOTIFICATION SYSTEM (SUBSCRIPTION EXPIRATION & SKILL UPDATES)
     let currentWebToast = null;
 
     function showWebToast(type, title, desc, actionLabel, onAction) {
@@ -1555,10 +2188,10 @@
       showWebToast(
         "SKILL",
         "🚀 إصدار جديد متاح: تحديث v2.5 لمهارة مشتراة!",
-        "تم إطلاق الإصدار v2.5 من 'وكيل المحامي الذكي' مع تحديثات نظام المعاملات المدنية السعودي ولائحة التجارة. اضغط للتحديث المجاني.",
+        "تم إطلاق الإصدار v2.5 من 'مستشار العقود والامتثال' مع تحديثات الأنظمة التجارية. اضغط للتحديث المجاني.",
         "تحديث المهارة إلى v2.5",
         () => {
-          showToast("✅ تم تحديث مهارة [وكيل المحامي الذكي] إلى الإصدار v2.5 بنجاح!");
+          showToast("✅ تم تحديث مهارة [مستشار العقود والامتثال] إلى الإصدار v2.5 بنجاح!");
         }
       );
     }
@@ -1571,12 +2204,10 @@
       }
     }
 
-    // Auto-alert after page load
     setTimeout(() => {
       triggerSkillUpdateToast();
-    }, 1800);
+    }, 2000);
 
-    // Initial render
     applyFiltersAndSort();
   </script>
 </body>

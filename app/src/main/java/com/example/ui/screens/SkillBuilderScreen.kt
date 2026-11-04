@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Code
@@ -32,6 +33,7 @@ import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -63,6 +65,8 @@ fun SkillBuilderScreen(
   outputFormat: String,
   priceType: String,
   priceSar: String,
+  isGeneratingAi: Boolean = false,
+  aiErrorMessage: String? = null,
   modifier: Modifier = Modifier
 ) {
   LazyColumn(
@@ -112,7 +116,7 @@ fun SkillBuilderScreen(
               )
             )
             Text(
-              text = "حدد سلوك الوكيل، الأدوات المسموحة، وقواعد الاستدعاء لنشره واختباره.",
+              text = "حدد سلوك الوكيل، الأدوات المسموحة، أو استخدم Gemini AI لتوليد التعليمات تلقائياً.",
               style = MaterialTheme.typography.bodySmall.copy(
                 color = SabaqTextSecondary
               )
@@ -171,12 +175,82 @@ fun SkillBuilderScreen(
       )
     }
 
-    // System Instructions / Prompt
+    // System Instructions / Prompt + Gemini Smart Generator
     item {
-      Text(
-        text = "التعليمات البرمجية وسلوك الوكيل (System Instructions):",
-        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
-      )
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Text(
+          text = "التعليمات البرمجية وسلوك الوكيل:",
+          style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+        )
+
+        Surface(
+          modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .clickable(enabled = !isGeneratingAi) { viewModel.generateSkillConfigWithGemini() }
+            .border(1.dp, SabaqGoldPrimary.copy(alpha = 0.6f), RoundedCornerShape(10.dp))
+            .testTag("gemini_generate_skill_btn"),
+          color = SabaqGoldPrimary.copy(alpha = 0.15f),
+          shape = RoundedCornerShape(10.dp)
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            if (isGeneratingAi) {
+              CircularProgressIndicator(
+                modifier = Modifier.size(14.dp),
+                color = SabaqGoldPrimary,
+                strokeWidth = 2.dp
+              )
+              Spacer(modifier = Modifier.width(6.dp))
+              Text(
+                text = "جاري التوليد عبر Gemini...",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SabaqGoldPrimary
+                )
+              )
+            } else {
+              Icon(
+                imageVector = Icons.Default.AutoAwesome,
+                contentDescription = "توليد عبر Gemini AI",
+                tint = SabaqGoldPrimary,
+                modifier = Modifier.size(15.dp)
+              )
+              Spacer(modifier = Modifier.width(6.dp))
+              Text(
+                text = "توليد ذكي عبر Gemini AI",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SabaqGoldPrimary
+                )
+              )
+            }
+          }
+        }
+      }
+
+      if (!aiErrorMessage.isNullOrBlank()) {
+        Spacer(modifier = Modifier.height(6.dp))
+        Surface(
+          modifier = Modifier.fillMaxWidth(),
+          color = MaterialTheme.colorScheme.errorContainer,
+          shape = RoundedCornerShape(10.dp)
+        ) {
+          Text(
+            text = aiErrorMessage,
+            style = MaterialTheme.typography.labelSmall.copy(
+              color = MaterialTheme.colorScheme.onErrorContainer
+            ),
+            modifier = Modifier.padding(8.dp)
+          )
+        }
+      }
+
       Spacer(modifier = Modifier.height(6.dp))
 
       OutlinedTextField(

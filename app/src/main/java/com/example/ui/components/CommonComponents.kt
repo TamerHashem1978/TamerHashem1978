@@ -68,6 +68,8 @@ import com.example.ui.viewmodel.SabaqNavTab
 @Composable
 fun SabaqTopHeader(
   currentTier: String,
+  selectedCountry: com.example.data.model.ArabCountry? = null,
+  onOpenCountryPicker: () -> Unit = {},
   hasActiveAlert: Boolean = false,
   onNotificationClick: () -> Unit = {},
   onNavigateToDashboard: () -> Unit,
@@ -81,25 +83,26 @@ fun SabaqTopHeader(
     Column(
       modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 10.dp)
+        .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
       Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        // Brand & Mascot Robot Icon
+        // Brand & Official Sabaq Logo
         Row(
           verticalAlignment = Alignment.CenterVertically,
           modifier = Modifier.clickable { onNavigateToDashboard() }
         ) {
-          // روبوت سبق الذكي كأيقونة تفاعلية
-          SabaqMascotRobotView(
-            size = 38.dp,
-            subtitle = null
+          // الشعار الرسمي المعتمد لصقر سبق الذهبي
+          SabaqOfficialLogoView(
+            size = 40.dp,
+            showGlow = true,
+            is3dFloating = true
           )
 
-          Spacer(modifier = Modifier.width(10.dp))
+          Spacer(modifier = Modifier.width(8.dp))
 
           Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -109,16 +112,17 @@ fun SabaqTopHeader(
                 style = TextStyle(
                   brush = SabaqHeadingGradient,
                   fontWeight = FontWeight.Bold,
-                  fontSize = 24.sp
+                  fontSize = 22.sp
                 )
               )
-              Spacer(modifier = Modifier.width(6.dp))
+              Spacer(modifier = Modifier.width(5.dp))
               Text(
                 text = "SABAQ AI",
                 style = MaterialTheme.typography.labelSmall.copy(
                   fontWeight = FontWeight.Bold,
-                  letterSpacing = 1.8.sp,
-                  color = SabaqGoldHighlight
+                  letterSpacing = 1.6.sp,
+                  color = SabaqGoldHighlight,
+                  fontSize = 10.sp
                 )
               )
             }
@@ -127,15 +131,15 @@ fun SabaqTopHeader(
             Row(verticalAlignment = Alignment.CenterVertically) {
               Box(
                 modifier = Modifier
-                  .size(7.dp)
+                  .size(6.dp)
                   .clip(CircleShape)
                   .background(SabaqGreenBright)
               )
-              Spacer(modifier = Modifier.width(5.dp))
+              Spacer(modifier = Modifier.width(4.dp))
               Text(
                 text = "gosabaq.com",
                 style = MaterialTheme.typography.labelSmall.copy(
-                  fontSize = 11.sp,
+                  fontSize = 10.sp,
                   color = SabaqGreenBright,
                   fontWeight = FontWeight.SemiBold
                 )
@@ -144,12 +148,50 @@ fun SabaqTopHeader(
           }
         }
 
-        // Subscription Tier & Notification Bell
+        // Country & Currency Selector + Subscription Tier + Notification Bell
         Row(verticalAlignment = Alignment.CenterVertically) {
+          // Country / Currency Chip
+          if (selectedCountry != null) {
+            Surface(
+              modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .clickable { onOpenCountryPicker() }
+                .border(
+                  1.dp,
+                  SabaqGoldPrimary.copy(alpha = 0.5f),
+                  RoundedCornerShape(16.dp)
+                )
+                .testTag("top_country_currency_btn"),
+              color = SabaqGreenCard,
+              shape = RoundedCornerShape(16.dp)
+            ) {
+              Row(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
+              ) {
+                Text(
+                  text = selectedCountry.flagEmoji,
+                  fontSize = 15.sp
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                  text = selectedCountry.currencySymbolAr,
+                  fontFamily = ArefRuqaaFontFamily,
+                  style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 11.sp,
+                    color = SabaqGoldPrimary
+                  )
+                )
+              }
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+          }
+
           // Notification Bell
           Box(
             modifier = Modifier
-              .size(36.dp)
+              .size(34.dp)
               .clip(CircleShape)
               .background(SabaqGreenCard)
               .border(
@@ -165,7 +207,7 @@ fun SabaqTopHeader(
               imageVector = Icons.Default.Notifications,
               contentDescription = "التنبيهات والإشعارات",
               tint = if (hasActiveAlert) SabaqAmber else SabaqGoldPrimary,
-              modifier = Modifier.size(18.dp)
+              modifier = Modifier.size(17.dp)
             )
             if (hasActiveAlert) {
               Box(
@@ -178,17 +220,17 @@ fun SabaqTopHeader(
             }
           }
 
-          Spacer(modifier = Modifier.width(8.dp))
+          Spacer(modifier = Modifier.width(6.dp))
 
           Surface(
             modifier = Modifier
-              .clip(RoundedCornerShape(20.dp))
+              .clip(RoundedCornerShape(16.dp))
               .clickable { onNavigateToDashboard() }
               .border(
                 1.dp,
                 if (currentTier == "PRO" || currentTier == "ENTERPRISE") SabaqGoldPrimary.copy(alpha = 0.5f)
                 else SabaqGreenBright.copy(alpha = 0.3f),
-                RoundedCornerShape(20.dp)
+                RoundedCornerShape(16.dp)
               )
               .testTag("top_tier_chip"),
             color = if (currentTier == "PRO" || currentTier == "ENTERPRISE") {
@@ -196,29 +238,29 @@ fun SabaqTopHeader(
             } else {
               SabaqGreenCard
             },
-            shape = RoundedCornerShape(20.dp)
+            shape = RoundedCornerShape(16.dp)
           ) {
             Row(
-              modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+              modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
               verticalAlignment = Alignment.CenterVertically
             ) {
               Icon(
                 imageVector = if (currentTier == "ENTERPRISE") Icons.Default.Verified else Icons.Default.Shield,
                 contentDescription = "Subscription Tier",
                 tint = if (currentTier == "PRO" || currentTier == "ENTERPRISE") SabaqGoldPrimary else SabaqGreenBright,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(14.dp)
               )
-              Spacer(modifier = Modifier.width(6.dp))
+              Spacer(modifier = Modifier.width(4.dp))
               Text(
                 text = when (currentTier) {
-                  "PRO" -> "محترف PRO"
-                  "ENTERPRISE" -> "مؤسسات AI"
+                  "PRO" -> "PRO"
+                  "ENTERPRISE" -> "مؤسسات"
                   else -> "المستكشف"
                 },
                 fontFamily = ArefRuqaaFontFamily,
                 style = MaterialTheme.typography.labelSmall.copy(
                   fontWeight = FontWeight.Bold,
-                  fontSize = 13.sp,
+                  fontSize = 11.sp,
                   color = if (currentTier == "PRO" || currentTier == "ENTERPRISE") SabaqGoldPrimary else SabaqTextPrimary
                 )
               )

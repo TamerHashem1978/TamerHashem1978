@@ -71,6 +71,8 @@ fun TestSandboxScreen(
   onSkillSelected: (AgentSkill) -> Unit,
   onPromptChanged: (String) -> Unit,
   onRunTest: () -> Unit,
+  errorMessage: String? = null,
+  onDismissError: () -> Unit = {},
   modifier: Modifier = Modifier
 ) {
   LazyColumn(
@@ -109,22 +111,88 @@ fun TestSandboxScreen(
 
           Spacer(modifier = Modifier.width(12.dp))
 
-          Column {
-            Text(
-              text = "مختبر تقييم واختبار مهارات الوكلاء",
-              fontFamily = ArefRuqaaFontFamily,
-              style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = SabaqGoldPrimary
+          Column(modifier = Modifier.weight(1f)) {
+            Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Text(
+                text = "مختبر تقييم واختبار مهارات الوكلاء",
+                fontFamily = ArefRuqaaFontFamily,
+                style = MaterialTheme.typography.titleMedium.copy(
+                  fontWeight = FontWeight.Bold,
+                  fontSize = 18.sp,
+                  color = SabaqGoldPrimary
+                )
               )
-            )
+              Surface(
+                color = SabaqEmerald.copy(alpha = 0.18f),
+                shape = RoundedCornerShape(8.dp)
+              ) {
+                Text(
+                  text = "✨ Gemini 3.8 Flash",
+                  style = MaterialTheme.typography.labelSmall.copy(
+                    color = SabaqEmerald,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                  ),
+                  modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+              }
+            }
             Text(
-              text = "قم بمحاكاة تشغيل الوكيل وتتبع مسار الاستدلال (Reasoning) واستهلاك الرموز.",
+              text = "قم بتشغيل الوكيل مباشرة عبر Gemini API وتتبع مسار الاستدلال (Reasoning) واستهلاك الرموز.",
               style = MaterialTheme.typography.bodySmall.copy(
                 color = SabaqTextSecondary
               )
             )
+          }
+        }
+      }
+    }
+
+    // Error Banner if AI call fails
+    if (!errorMessage.isNullOrBlank()) {
+      item {
+        Card(
+          modifier = Modifier
+            .fillMaxWidth()
+            .testTag("gemini_test_error_card"),
+          shape = RoundedCornerShape(14.dp),
+          colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+        ) {
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(
+              text = errorMessage,
+              style = MaterialTheme.typography.bodySmall.copy(
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                fontWeight = FontWeight.Medium
+              ),
+              modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Surface(
+              modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .clickable { onDismissError() },
+              color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.12f)
+            ) {
+              Text(
+                text = "إغلاق",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  color = MaterialTheme.colorScheme.onErrorContainer,
+                  fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+              )
+            }
           }
         }
       }
@@ -297,7 +365,7 @@ fun TestSandboxScreen(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-              text = "جاري استدعاء أدوات الوكيل وتنفيذ الاستدلال...",
+              text = "جاري تشغيل الوكيل عبر Gemini 3.8 Flash...",
               fontFamily = ArefRuqaaFontFamily,
               style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.Bold,
@@ -315,7 +383,7 @@ fun TestSandboxScreen(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-              text = "تشغيل مهارة الوكيل (Run Test)",
+              text = "تشغيل مهارة الوكيل عبر Gemini AI (Run Test)",
               fontFamily = ArefRuqaaFontFamily,
               style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,

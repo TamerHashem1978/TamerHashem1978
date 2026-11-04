@@ -1,6 +1,9 @@
 package com.example
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,6 +35,7 @@ import com.example.ui.components.SabaqBottomNavBar
 import com.example.ui.components.SabaqToastNotificationHost
 import com.example.ui.components.SabaqTopHeader
 import com.example.ui.dialogs.CheckoutDialog
+import com.example.ui.dialogs.CountryCurrencyDialog
 import com.example.ui.dialogs.ProductDetailDialog
 import com.example.ui.dialogs.ShareDialog
 import com.example.ui.screens.DashboardScreen
@@ -43,11 +47,78 @@ import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.SabaqNavTab
 import com.example.ui.viewmodel.SabaqViewModel
 import com.example.ui.viewmodel.SabaqViewModelFactory
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.recaptcha.RecaptchaAppCheckProviderFactory
 import kotlinx.coroutines.flow.collectLatest
+
+private const val TAG = "AppCheckInit"
+private const val DEBUG_TOKEN_EXTRA = "FIREBASE_APPCHECK_DEBUG_TOKEN"
+private const val DEBUG_STORE_PREFIX = "com.google.firebase.appcheck.debug.store."
+private const val DEBUG_SECRET_KEY = "com.google.firebase.appcheck.debug.DEBUG_SECRET"
+private const val RECAPTCHA_SITE_KEY_RES = "recaptcha_site_key"
+
+fun configureAppCheck(context: Context, intent: Intent?) {
+  try {
+    // 1. Ensure FirebaseApp is initialized
+    if (FirebaseApp.getApps(context).isEmpty()) {
+      FirebaseApp.initializeApp(context)
+    }
+
+    if (BuildConfig.DEBUG) {
+      // 2. Debug: Read debug token from Intent extra
+      val debugToken = intent?.getStringExtra(DEBUG_TOKEN_EXTRA)
+
+      if (!debugToken.isNullOrEmpty()) {
+        val persistenceKey = FirebaseApp.getInstance().persistenceKey
+        val prefs = context.getSharedPreferences(
+          "$DEBUG_STORE_PREFIX$persistenceKey",
+          Context.MODE_PRIVATE
+        )
+        // CRITICAL: MUST use commit() instead of apply() so the secret is written
+        // synchronously before DebugAppCheckProviderFactory reads it.
+        prefs.edit()
+          .putString(DEBUG_SECRET_KEY, debugToken)
+          .commit()
+        Log.d(TAG, "App Check debug secret configured successfully.")
+      } else {
+        Log.w(TAG, "No debug token found in Intent extra.")
+      }
+
+      FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+        DebugAppCheckProviderFactory.getInstance()
+      )
+      Log.d(TAG, "DebugAppCheckProviderFactory installed.")
+    } else {
+      // 3. Release: Look up recaptcha_site_key safely without throwing Resources.NotFoundException
+      val resId = context.resources.getIdentifier(RECAPTCHA_SITE_KEY_RES, "string", context.packageName)
+      if (resId != 0) {
+        val siteKey = context.getString(resId)
+        if (siteKey.isNotBlank()) {
+          FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            RecaptchaAppCheckProviderFactory.getInstance(siteKey)
+          )
+          Log.d(TAG, "RecaptchaAppCheckProviderFactory installed.")
+        } else {
+          Log.e(TAG, "recaptcha_site_key resource string is blank.")
+        }
+      } else {
+        Log.e(TAG, "recaptcha_site_key string resource not found in package.")
+      }
+    }
+  } catch (e: Exception) {
+    Log.e(TAG, "Failed to initialize Firebase App Check", e)
+  }
+}
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    // STEP 1: Configure App Check with launch intent before any UI, ViewModel, or Firebase operations
+    configureAppCheck(this, intent)
+
     enableEdgeToEdge()
 
     val database = AppDatabase.getDatabase(applicationContext)
@@ -92,13 +163,18 @@ fun SabaqApp(viewModel: SabaqViewModel) {
   val builderOutputFormat by viewModel.builderOutputFormat.collectAsStateWithLifecycle()
   val builderPriceType by viewModel.builderPriceType.collectAsStateWithLifecycle()
   val builderPriceSar by viewModel.builderPriceSar.collectAsStateWithLifecycle()
+  val isGeneratingSkillAi by viewModel.isGeneratingSkillAi.collectAsStateWithLifecycle()
+  val skillAiErrorMessage by viewModel.skillAiErrorMessage.collectAsStateWithLifecycle()
 
   // Testing Sandbox State
   val testingSelectedSkill by viewModel.testingSelectedSkill.collectAsStateWithLifecycle()
   val testingInputPrompt by viewModel.testingInputPrompt.collectAsStateWithLifecycle()
   val isTestingRunning by viewModel.isTestingRunning.collectAsStateWithLifecycle()
   val lastTestResult by viewModel.lastTestResult.collectAsStateWithLifecycle()
+  val testingErrorMessage by viewModel.testingErrorMessage.collectAsStateWithLifecycle()
   val activeToastAlert by viewModel.activeToastAlert.collectAsStateWithLifecycle()
+  val selectedCountry by viewModel.selectedCountry.collectAsStateWithLifecycle()
+  val isCountryPickerOpen by viewModel.isCountryPickerOpen.collectAsStateWithLifecycle()
 
   // Toast listener
   LaunchedEffect(Unit) {
@@ -114,6 +190,7 @@ fun SabaqApp(viewModel: SabaqViewModel) {
       SabaqTopHeader(
         currentTier = subscriptionState?.currentTierId ?: "FREE",
         hasActiveAlert = activeToastAlert != null,
+        selectedCountry = selectedCountry,
         onNotificationClick = {
           if (activeToastAlert != null) {
             viewModel.dismissToastAlert()
@@ -121,6 +198,7 @@ fun SabaqApp(viewModel: SabaqViewModel) {
             viewModel.triggerSubscriptionExpiringAlert()
           }
         },
+        onOpenCountryPicker = { viewModel.openCountryPicker() },
         onNavigateToDashboard = { viewModel.setTab(SabaqNavTab.DASHBOARD) }
       )
     },
@@ -150,6 +228,8 @@ fun SabaqApp(viewModel: SabaqViewModel) {
               onSearchQueryChanged = { viewModel.setSearchQuery(it) },
               onCategorySelected = { viewModel.setCategory(it) },
               onProductClicked = { viewModel.selectProductForDetail(it) },
+              selectedCountry = selectedCountry,
+              onOpenCountryPicker = { viewModel.openCountryPicker() },
               onTestClicked = { product ->
                 // Create a temporary skill representation to test in sandbox
                 val tempSkill = AgentSkill(
@@ -187,7 +267,9 @@ fun SabaqApp(viewModel: SabaqViewModel) {
               inputSchema = builderInputSchema,
               outputFormat = builderOutputFormat,
               priceType = builderPriceType,
-              priceSar = builderPriceSar
+              priceSar = builderPriceSar,
+              isGeneratingAi = isGeneratingSkillAi,
+              aiErrorMessage = skillAiErrorMessage
             )
           }
 
@@ -201,7 +283,9 @@ fun SabaqApp(viewModel: SabaqViewModel) {
               testHistory = allTestRuns,
               onSkillSelected = { viewModel.selectSkillForTesting(it) },
               onPromptChanged = { viewModel.testingInputPrompt.value = it },
-              onRunTest = { viewModel.runSkillTest() }
+              onRunTest = { viewModel.runSkillTest() },
+              errorMessage = testingErrorMessage,
+              onDismissError = { viewModel.clearTestingError() }
             )
           }
 
@@ -218,11 +302,16 @@ fun SabaqApp(viewModel: SabaqViewModel) {
             DashboardScreen(
               subscriptionState = subscriptionState,
               transactions = allTransactions,
+              country = selectedCountry,
               onSelectSubscription = { tierId, cost, nameAr ->
                 viewModel.openCheckoutForSubscription(tierId, cost, nameAr)
               },
               onRequestPayout = {
-                Toast.makeText(context, "تم إرسال طلب سحب الأرباح إلى حساب STC Pay المسجل بنجاح!", Toast.LENGTH_LONG).show()
+                val payoutMsg = when (selectedCountry.code) {
+                  "EG" -> "تم إرسال طلب سحب الأرباح عبر إنستاباي / فودافون كاش المسجل بنجاح!"
+                  else -> "تم إرسال طلب سحب الأرباح إلى حساب STC Pay / الحساب البنكي المسجل بنجاح!"
+                }
+                Toast.makeText(context, payoutMsg, Toast.LENGTH_LONG).show()
               },
               onTriggerSubscriptionAlert = { viewModel.triggerSubscriptionExpiringAlert() },
               onTriggerSkillUpdateAlert = { viewModel.triggerSkillUpdateAlert() }
@@ -235,6 +324,7 @@ fun SabaqApp(viewModel: SabaqViewModel) {
       if (selectedProductDetail != null) {
         ProductDetailDialog(
           product = selectedProductDetail,
+          country = selectedCountry,
           onDismiss = { viewModel.selectProductForDetail(null) },
           onBuyClicked = { product ->
             viewModel.selectProductForDetail(null)
@@ -268,6 +358,7 @@ fun SabaqApp(viewModel: SabaqViewModel) {
       if (checkoutState.isOpen) {
         CheckoutDialog(
           state = checkoutState,
+          country = selectedCountry,
           onDismiss = { viewModel.closeCheckout() },
           onSelectPaymentMethod = { viewModel.updatePaymentMethod(it) },
           onUpdateCardField = { num, holder, exp, cvv ->
@@ -285,6 +376,14 @@ fun SabaqApp(viewModel: SabaqViewModel) {
           onPublishToMarketplace = { viewModel.publishSkillToMarketplace(it) }
         )
       }
+
+      // Country & Currency Selection Dialog
+      CountryCurrencyDialog(
+        isOpen = isCountryPickerOpen,
+        selectedCountry = selectedCountry,
+        onDismiss = { viewModel.closeCountryPicker() },
+        onCountrySelected = { viewModel.selectCountry(it) }
+      )
 
       // Floating In-App Toast Notification Banner
       SabaqToastNotificationHost(

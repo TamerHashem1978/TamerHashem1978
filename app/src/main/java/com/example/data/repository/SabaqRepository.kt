@@ -201,6 +201,19 @@ class SabaqRepository(private val dao: SabaqDao) {
     testResult
   }
 
+  suspend fun recordSkillTestRun(
+    skill: AgentSkill,
+    testResult: TestRunResult
+  ): TestRunResult = withContext(Dispatchers.IO) {
+    dao.insertTestRun(testResult)
+    val updatedSkill = skill.copy(
+      testCount = skill.testCount + 1,
+      benchmarkScore = ((skill.benchmarkScore * skill.testCount + testResult.scorePercentage) / (skill.testCount + 1))
+    )
+    dao.updateSkill(updatedSkill)
+    testResult
+  }
+
   suspend fun processPurchase(
     productId: String,
     paymentMethod: String
